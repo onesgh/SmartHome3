@@ -1,0 +1,90 @@
+.Dashboard_container {
+    -fx-background-color:  #F5F5DC;
+}
+
+/* Header */
+.header_container {
+    -fx-background-color: #D9D9D9;
+    -fx-padding: 10px;
+    -fx-border-color: #B0B0B0;
+    -fx-border-width: 0px 0px 1px 0px;
+}
+
+.title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+}
+
+.date_time_label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+}
+
+.user_label {
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+}
+
+/* Cards for Light, Motion, Temperature, Humidity */
+.card {
+    -fx-background-color: #D2B48C;
+    -fx-border-color: #D2B48C;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 15px;
+    -fx-background-radius: 5px;
+}
+
+.card_title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+}
+
+.card_label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #444;
+}
+
+/* Quick Panel */
+.quick_panel {
+    -fx-background-color: white;
+    -fx-border-color: #D1A86F; /* Light brown border */
+    -fx-border-width: 3px;
+    -fx-border-radius: 5px;
+    -fx-padding: 15px;
+    -fx-background-radius: 5px;
+}
+
+.quick_panel_title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+}
+
+.quick_panel_items {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-padding: 5px 0px;
+}
+
+/* Slider Styling (For Temperature) */
+.slider .track {
+    -fx-background-color: #D9D9D9;
+    -fx-border-radius: 5px;
+}
+
+.slider .thumb {
+    -fx-background-color: #A0A0A0;
+}
+
+/* Hover Effects */
+.button:hover {
+    -fx-background-color: #C7A87D;
+    -fx-text-fill: white;
+}
+.login_form_container{
+    -fx-spacing:15;
+    -fx-alignment:top_left;
+}

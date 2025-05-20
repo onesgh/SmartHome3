@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="671.0" prefWidth="833.0" styleClass="Dashboard_container" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.Homeowner.HomeownerController">
+   <VBox layoutX="63.0" layoutY="80.0" prefHeight="100" prefWidth="251.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="63.0" AnchorPane.topAnchor="123.0">
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="💡 Lights On" wrappingWidth="137.693359375">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text style="-fx-font-size: 20px; -fx-fill: #4a2e18;" text="5">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Text>
+   </VBox>
+   <VBox layoutX="401.3333333333333" layoutY="123.0" prefHeight="100" prefWidth="371.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="401.0" AnchorPane.rightAnchor="61.0" AnchorPane.topAnchor="123.0">
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="⚙ Automation Status" />
+      <Text style="-fx-font-size: 20px; -fx-fill: #4a2e18;" text="Enabled" />
+   </VBox>
+   <VBox layoutX="63.0" layoutY="263.0" prefHeight="100" prefWidth="251.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="💡 Total Lights" />
+      <Text style="-fx-font-size: 20px; -fx-fill: #4a2e18;" text="12" />
+   </VBox>
+   <VBox layoutX="401.0" layoutY="263.0" prefHeight="100.0" prefWidth="371.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.rightAnchor="61.0">
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🌞 Brightness Control" />
+      <Slider fx:id="brightnessSlider" max="100" min="0" prefHeight="25.0" prefWidth="287.0" style="-fx-padding: 5 0 5 0;" value="50" />
+      <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="50%" />
+   </VBox>
+   <VBox layoutX="63.0" layoutY="402.0" prefHeight="237.0" prefWidth="713.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.rightAnchor="62.0">
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📊 Light Usage Trends" />
+      <LineChart fx:id="lightChart" prefHeight="190.0" prefWidth="693.0" title="Lights Usage Over Time">
+         <xAxis>
+            <CategoryAxis fx:id="lightXAxis" label="Time (Hours)" />
+         </xAxis>
+         <yAxis>
+            <NumberAxis fx:id="lightYAxis" label="Light Lux" />
+         </yAxis>
+      </LineChart>
+   </VBox>
+   <AnchorPane prefHeight="59.0" prefWidth="839.0" style="-fx-background-color: #ffffffcc; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
+      <children>
+         <Label layoutX="20.0" layoutY="15.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #555;" text=" Smart Home " />
+         <HBox alignment="CENTER_RIGHT" layoutX="750.0" layoutY="10.0" spacing="10" />
+         <Label fx:id="dateTimeLabel" layoutX="201.0" layoutY="18.0" style="-fx-text-fill: #7a7a7a; -fx-font-size: 13px;" text="12:19 PM | Monday, 24th of October, 2024" />
+         <Text fx:id="user_name" layoutX="707.0" layoutY="36.0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #2b2b2b;" text="Hi, Jane👋" />
+      </children>
+   </AnchorPane>
+
+</AnchorPane>

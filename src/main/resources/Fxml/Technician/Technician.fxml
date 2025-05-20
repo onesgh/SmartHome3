@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="650.0" prefWidth="750.0" styleClass="Dashboard_container" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.Technician.TechnicianController">
+    <Label layoutX="20.0" layoutY="49.0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Technician Dashboard" />
+    <!-- Search Field -->
+    <TextField fx:id="search_field" layoutX="15.0" layoutY="90.0" prefHeight="40.0" prefWidth="300" promptText="Search Requests..." style="-fx-background-radius: 5px; -fx-padding: 5px;" />
+
+    <!-- Maintenance Requests Label -->
+    <Label layoutX="20.0" layoutY="144.0" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Maintenance Requests:" />
+
+    <!-- ListView for Requests -->
+    <ListView fx:id="request_listview" layoutX="15.0" layoutY="181.0" prefHeight="260.0" prefWidth="400" style="-fx-border-color: #ccc; -fx-border-radius: 5px;" />
+
+    <!-- Request Details Section -->
+    <VBox layoutX="428.0" layoutY="181.0" prefHeight="353.0" prefWidth="341.0" spacing="10" style="-fx-background-color: white; -fx-padding: 15px; -fx-border-radius: 10px; -fx-border-color: #ddd;">
+
+        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Request Details:" />
+
+        <TextArea fx:id="request_details" editable="false" prefHeight="241.0" prefWidth="318.0" style="-fx-border-color: #ccc; -fx-background-radius: 5px;" />
+
+        <Label style="-fx-font-size: 14px;" text="Progress:" />
+
+        <ProgressBar fx:id="request_progress" prefWidth="100" />
+    </VBox>
+
+    <!-- Action Buttons -->
+    <HBox layoutX="20" layoutY="350" spacing="10" />
+
+     <Button fx:id="refresh_btn" layoutX="315.0" layoutY="491.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-radius: 5px;" text="Refresh" />
+
+     <Button fx:id="reject_btn" layoutX="165.0" layoutY="491.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-radius: 5px;" text="Reject" />
+     <Button fx:id="resolve_btn" layoutX="15.0" layoutY="491.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-radius: 5px;" text="Resolve" />
+   <Text layoutX="637.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Smart Home " wrappingWidth="110.093017578125">
+      <font>
+         <Font name="System Bold" size="15.0" />
+      </font>
+   </Text>
+   <Button fx:id="Logout_btn1" layoutX="638.0" layoutY="595.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="121.0" text="Logout" />
+</AnchorPane>

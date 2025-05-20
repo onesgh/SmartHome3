@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="650.0" prefWidth="750.0" styleClass="Dashboard_container" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.SecurityGuard.SecurityGuardController">
+    <!-- Dashboard Title -->
+    <Label layoutX="14.0" layoutY="58.0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Security Guard Dashboard" />
+
+    <!-- Live Activity Log -->
+    <Label layoutX="14.0" layoutY="145.0" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Live Activity Log:" />
+    <ListView fx:id="activity_log_listview" layoutX="14.0" layoutY="182.0" prefHeight="200" prefWidth="400" style="-fx-border-color: #ccc; -fx-border-radius: 5px;" />
+
+    <!-- Visitor Management Section -->
+    <VBox layoutX="429.0" layoutY="182.0" prefHeight="329.0" prefWidth="350" spacing="10" style="-fx-background-color: white; -fx-padding: 15px; -fx-border-radius: 10px; -fx-border-color: #ddd;">
+
+        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Visitor Management" />
+
+        <TextField fx:id="visitor_name_field" prefHeight="54.0" prefWidth="318.0" promptText="Visitor Name" style="-fx-border-color: #ccc; -fx-background-radius: 5px;" />
+        <TextField fx:id="visitor_purpose_field" prefHeight="58.0" prefWidth="318.0" promptText="Purpose of Visit" style="-fx-border-color: #ccc; -fx-background-radius: 5px;" />
+
+        <HBox spacing="10">
+            <Button fx:id="checkin_btn" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-radius: 5px;" text="Check-In" />
+            <Button fx:id="checkout_btn" style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-radius: 5px;" text="Check-Out" />
+        </HBox>
+    </VBox>
+
+    <!-- Incident Reporting Section -->
+    <VBox layoutX="20.0" layoutY="400.0" prefHeight="217.0" prefWidth="400" spacing="10" style="-fx-background-color: white; -fx-padding: 15px; -fx-border-radius: 10px; -fx-border-color: #ddd;">
+
+        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Incident Reporting" />
+        <TextArea fx:id="incident_report_area" prefHeight="100" promptText="Describe the incident..." style="-fx-border-color: #ccc; -fx-background-radius: 5px;" />
+
+        <Button fx:id="report_incident_btn" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-radius: 5px;" text="Submit Report" />
+    </VBox>
+
+    <!-- Quick Controls -->
+    <HBox layoutX="450" layoutY="310" spacing="10" />
+     <Button fx:id="emergency_alert_btn" layoutX="442.0" layoutY="531.0" prefHeight="48.0" prefWidth="129.0" style="-fx-background-color: #ff0000; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-radius: 5px;" text="Emergency Alert" />
+     <Button fx:id="refresh_btn" layoutX="624.0" layoutY="531.0" prefHeight="48.0" prefWidth="129.0" style="-fx-background-color: #ffa500; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-radius: 5px;" text="Refresh Log" />
+   <Text layoutX="643.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Smart Home" wrappingWidth="101.42633056640625">
+      <font>
+         <Font name="System Bold" size="15.0" />
+      </font>
+   </Text>
+   <Button fx:id="logout_btn2" layoutX="626.0" layoutY="590.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="129.0" text="Logout " />
+
+</AnchorPane>

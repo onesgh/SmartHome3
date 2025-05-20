@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="180.0" styleClass="main_menu_container" stylesheets="@../../Styles/HomeownerMenu.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.Homeowner.HomeownerMenuController">
+   <AnchorPane prefHeight="750.0" prefWidth="180.0" styleClass="left_container">
+      <VBox prefHeight="80.0" prefWidth="160.0" styleClass="title_container" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <AnchorPane prefHeight="0.0" prefWidth="151.0" />
+         <AnchorPane prefHeight="40.0" prefWidth="160.0">
+            <children>
+               <FontAwesomeIconView fill="#745230" glyphName="HOME" layoutX="14.0" layoutY="77.0" size="3em" text="" textAlignment="CENTER" wrappingWidth="107.498046875">
+                  <font>
+                     <Font size="30.0" />
+                  </font>
+               </FontAwesomeIconView>
+            </children>
+         </AnchorPane>
+         <Text fill="#745230" strokeType="OUTSIDE" strokeWidth="0.0">
+            <font>
+               <Font name="System Bold" size="12.0" />
+            </font>
+         </Text>
+      </VBox>
+      <VBox layoutY="95.0" prefHeight="400.0" prefWidth="180.0" styleClass="menu_container" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="95.0">
+         <Button fx:id="dashboard_btn" mnemonicParsing="false" prefHeight="35.0" prefWidth="79.0" text=" Dashboard">
+            <graphic>
+               <FontAwesomeIconView fill="#b79f9f" glyphName="HOME" selectionFill="#1b1818" tabSize="0" />
+            </graphic>
+         </Button>
+         <Button fx:id="light_btn" mnemonicParsing="false" text="        💡 Light" />
+         <Button fx:id="motion_btn" mnemonicParsing="false" text="      💧 Motion" />
+         <Button fx:id="temperature_btn" mnemonicParsing="false" text="   🌡Temperature" />
+         <Button fx:id="humidity_btn" mnemonicParsing="false" text="      📡Humidity" />
+         <Line endX="120.0" />
+         <Button fx:id="profile_btn" mnemonicParsing="false" text="         Profile">
+            <graphic>
+               <FontAwesomeIconView glyphName="USER" text="" wrappingWidth="1.0" />
+            </graphic>
+         </Button>
+         <Button fx:id="logout_btn" mnemonicParsing="false" text="     Logout">
+            <graphic>
+               <FontAwesomeIconView glyphName="EXTERNAL_LINK" />
+            </graphic>
+         </Button>
+      </VBox>
+      <VBox prefHeight="120.0" prefWidth="130.0" styleClass="report_container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Report Bug?" />
+         <Label text="Use This to Report Any Issue" />
+         <Button fx:id="report_btn" mnemonicParsing="false" text="Report" textFill="#e4ad72">
+            <graphic>
+               <FontAwesomeIconView glyphName="PLUS" />
+            </graphic>
+         </Button>
+      </VBox>
+   </AnchorPane>
+</VBox>

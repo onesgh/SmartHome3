@@ -1,0 +1,84 @@
+.main_menu_container{
+    -fx-background-color: #F5F5DC;
+    -fx-alignmnet: center;
+}
+.left_container{
+    -fx-background-color:  #D2B48C;
+    -fx-background-radius:10;
+    -fx-effect: dropShadow(two-pass-box,#A67B5B,5,0,0,4);
+}
+.title_container{
+    -fx-background-color:#D2B48C ;
+    -fx-background-radius:20 20 0 0;
+    -fx-alignment: top_center ;
+    -fx-padding:10;
+}
+.title_container_FontawesomeIconView{
+    -fx-fill:#6B4F36;
+}
+.title_container Text{
+  -fx-fill:#6B4F36;
+    -fx-font-size:2em;
+
+}
+/* Navigation Section */
+.menu_container{
+    -fx-padding: 10 10 10 20;
+    -fx-spacing: 20 ;
+}
+.menu_container Button {
+  -fx-pref-width:115;
+    -fx-pref-height: 40;
+    -fx-background-color:#F5F5DC;
+    -fx-text-fill:#6B4F36 ;
+    -fx-alignment: center_left;
+    -fx-effect: dropshadow(three-pass-box,#F5F5DC,5,0,0,6);
+}
+.menu_container_ Botton:hover{
+   -fx-cursor:hand ;
+}
+.menu_container Button FontAwesomeIconView{
+  -fx-fill:#6B4F36;
+}
+.alt_menu_btn{
+ -fx-pref-width: 115;
+    -fx-pref-height:40;
+   -fx-background-color:#D2B48C;
+   -fx-font-size:1,1em;
+   -fx-alignment: center_left;
+
+}
+.alt_menu_btn FontAwesomrIconView{
+  -fx-fill: #6B4F36;
+}
+/* Report Bug */
+.report_container{
+    -fx-background-color:#D2B48C;
+    -fx-background-radius:10;
+    -fx-alignment:center;
+    -fx-spacing: 10;
+    -fx-badding: 10 0 10 0;
+}
+.report_container Text {
+  -fx-font-weight: bold ;
+   -fx-fill:#6B4F36;
+}
+.report_container Label{
+    -fx-text-alignmnet:center;
+    -fx-arap-text:true;
+
+}
+.report_container Button {
+    -fx-pref-width: 80;
+    -fx-background-color: #6B4F36;
+    -fx-fill: #D2B48C ;
+}
+.report_container Button :hover {
+    -fx-cursor: hand ;
+
+}
+.report_container Button FontAwsomeIconView {
+    -fx-fill: #D2B48C ;
+
+
+}

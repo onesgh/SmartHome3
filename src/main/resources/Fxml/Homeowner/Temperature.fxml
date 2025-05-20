@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="671.0" prefWidth="833.0" styleClass="Dashboard_container" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.Homeowner.HomeownerController">
+    <VBox layoutX="90.0" layoutY="100.0" prefHeight="100" prefWidth="263.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.topAnchor="123.0">
+        <children>
+          <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🌡 Current Temperature" />
+          <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="22°C" />
+        </children>
+    </VBox>
+    <VBox layoutX="350.0" layoutY="100.0" prefHeight="100" prefWidth="340.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.rightAnchor="61.0" AnchorPane.topAnchor="123.33333333333333">
+        <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🌞 Highest Temperature" />
+        <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="30°C" />
+    </VBox>
+    <VBox layoutX="90.0" layoutY="236.0" prefHeight="100" prefWidth="263.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+        <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="❄ Lowest Temperature" />
+        <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="18°C" />
+    </VBox>
+    <VBox layoutX="349.0" layoutY="236.0" prefHeight="100.0" prefWidth="340" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.rightAnchor="61.0">
+        <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🎛 Adjust Temperature" />
+        <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="22°C" />
+        <Slider fx:id="temperatureSlider" max="35" min="15" prefHeight="25.0" prefWidth="287.0" style="-fx-padding: 5 0 5 0;" value="22" />
+    </VBox>
+    <VBox layoutX="90.0" layoutY="374.0" prefHeight="226.0" prefWidth="684.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+        <Text style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📈 Temperature Trends" />
+        <LineChart fx:id="TemperatureChart" prefHeight="176.0" prefWidth="664.0" title="Temperature Over Time">
+            <xAxis>
+                <CategoryAxis label="Time (Hours)" fx:id="xAxis1" />
+            </xAxis>
+            <yAxis>
+                <NumberAxis fx:id="yAxis1" label="Temperature (°C)" />
+            </yAxis>
+        </LineChart>
+    </VBox>
+   <AnchorPane layoutY="-1.0" prefHeight="59.0" prefWidth="833.0" style="-fx-background-color: #ffffffcc; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
+      <children>
+         <Label layoutX="20.0" layoutY="15.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #555;" text="Smart Home " />
+         <HBox alignment="CENTER_RIGHT" layoutX="750.0" layoutY="10.0" spacing="10" />
+          <Label fx:id="dateTimeLabel" layoutX="201.0" layoutY="18.0" style="-fx-text-fill: #7a7a7a; -fx-font-size: 13px;" text="12:19 PM | Monday, 24th of October, 2024" />
+          <Text fx:id="user_name" layoutX="707.0" layoutY="36.0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #2b2b2b;" text="Hi, Jane👋" />
+      </children>
+   </AnchorPane>
+</AnchorPane>
