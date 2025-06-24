@@ -1,14 +1,11 @@
 package com.example.smarthome3.controllers;
 
 import com.example.smarthome3.Models.Model;
-import com.example.smarthome3.Views.AccountType;
 import com.example.smarthome3.Database.DatabaseConnector;
 import com.example.smarthome3.Database.UserDAO;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -22,10 +19,7 @@ import java.util.ResourceBundle;
 public class LoginController implements Initializable {
 
     @FXML
-    private ChoiceBox<AccountType> acc_selector;
-
-    @FXML
-    private TextField user_address_lbl;  // This now represents the username field
+    private TextField user_address_lbl; // Username field
 
     @FXML
     private Button login_btn;
@@ -42,18 +36,6 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         DatabaseConnector dbConnector = new DatabaseConnector();
         userDAO = new UserDAO(dbConnector);
-
-        // Populate account types
-        acc_selector.setItems(FXCollections.observableArrayList(
-                AccountType.HOMEOWNER,
-                AccountType.TECHNICIAN,
-                AccountType.SECURITYGUARD
-        ));
-
-        acc_selector.setValue(Model.getInstance().getViewFactory().getLoginAccountType());
-        acc_selector.valueProperty().addListener(observable ->
-                Model.getInstance().getViewFactory().setLoginAccountType(acc_selector.getValue())
-        );
 
         // Set the login button action
         login_btn.setOnAction(event -> onLogin());
@@ -78,25 +60,15 @@ public class LoginController implements Initializable {
                 String storedPassword = result.getString("password");
                 String roleFromDB = result.getString("accountType").toUpperCase();
 
-                AccountType selectedRole = acc_selector.getValue();
-
-                // Role mismatch check
-                if (!roleFromDB.equals(selectedRole.name())) {
-                    showAlert(AlertType.ERROR, "Login Error",
-                            "Account type mismatch.\n" +
-                                    "You selected: " + selectedRole + "\n" +
-                                    "But this user is registered as: " + roleFromDB);
-                    return;
-                }
-
                 // Password check
                 if (storedPassword.equals(password)) {
                     Model.getInstance().getViewFactory().setLoggedInUser(username);
                     Model.getInstance().setUsername(username);
-                    Model.getInstance().setUserRole(selectedRole);
+                    Model.getInstance()
+                            .setUserRole(Enum.valueOf(com.example.smarthome3.Views.AccountType.class, roleFromDB));
 
-                    System.out.println("✅ Login successful as " + roleFromDB);
-                    openDashboard(selectedRole);
+                    System.out.println(" Login successful as " + roleFromDB);
+                    openDashboard(roleFromDB);
                 } else {
                     showAlert(AlertType.ERROR, "Login Error", "Incorrect password.");
                 }
@@ -109,18 +81,23 @@ public class LoginController implements Initializable {
         }
     }
 
-    private void openDashboard(AccountType accountType) {
+    private void openDashboard(String accountType) {
         Stage stage = (Stage) login_btn.getScene().getWindow();
         Model.getInstance().getViewFactory().closeStage(stage);
 
         switch (accountType) {
-            case HOMEOWNER -> Model.getInstance().getViewFactory().showHomeownerWindow();
-            case TECHNICIAN -> Model.getInstance().getViewFactory().showTechnicianWindow();
-            case SECURITYGUARD -> Model.getInstance().getViewFactory().showSecurityGuardWindow();
-            default -> {
-                System.out.println("❌ Unknown account type.");
+            case "HOMEOWNER":
+                Model.getInstance().getViewFactory().showHomeownerWindow();
+                break;
+            case "TECHNICIAN":
+                Model.getInstance().getViewFactory().showTechnicianWindow();
+                break;
+            case "SECURITYGUARD":
+                Model.getInstance().getViewFactory().showSecurityGuardWindow();
+                break;
+            default:
+                System.out.println(" Unknown account type.");
                 showAlert(AlertType.ERROR, "Unknown Account", "Unknown account type. Please contact support.");
-            }
         }
     }
 

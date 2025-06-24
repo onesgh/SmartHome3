@@ -1,6 +1,8 @@
 package com.example.smarthome3.Database;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DatabaseConnector {
 
@@ -11,10 +13,13 @@ public class DatabaseConnector {
             // Load MySQL JDBC Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            // Establish connection with the database
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/Smart_Home2", "root", "MyTeam"
-            );
+            // Remote DB connection URL, username, password
+            String url = "jdbc:mysql://195.235.211.197:3306/pii2_SmartSphere";  // your remote DB URL
+            String user = "pii2_SmartSphere";                      // your remote DB username
+            String password = "Smarthome1";                  // your remote DB password
+
+            // Establish connection with the remote database
+            connection = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException e) {
             System.out.println("MySQL JDBC Driver not found: " + e.getMessage());
         } catch (SQLException e) {
@@ -24,27 +29,14 @@ public class DatabaseConnector {
     }
 
     public static void main(String[] args) {
-        Connection myConnection = null;
-
-        try {
-            // Get database connection
-            myConnection = getConnection();
-            if (myConnection == null) {
-                System.out.println("Failed to establish a database connection.");
-                return;
-            }
-            System.out.println("Database connection established successfully.");
-
-        } finally {
-            // Ensure connection is closed properly
+        try (Connection myConnection = getConnection()) {
             if (myConnection != null) {
-                try {
-                    myConnection.close();
-                    System.out.println("Database connection closed.");
-                } catch (SQLException e) {
-                    System.out.println("Failed to close database connection: " + e.getMessage());
-                }
+                System.out.println("Database connection established successfully.");
+            } else {
+                System.out.println("Failed to establish a database connection.");
             }
+        } catch (SQLException e) {
+            System.out.println("Failed to close database connection: " + e.getMessage());
         }
     }
 }
