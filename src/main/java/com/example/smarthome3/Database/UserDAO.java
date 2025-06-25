@@ -10,13 +10,13 @@ public class UserDAO {
     }
 
     // Create a new user
-    public boolean createUser(String username, String email, String password, String accountType) {
-        String sql = "INSERT INTO users (username, email, password, accountType) VALUES (?, ?, ?, ?)";
+    public boolean createUser(String username, String email, String passwordHash, String accountType) {
+        String sql = "INSERT INTO User (username, email, passwordHash, accountType) VALUES (?, ?, ?, ?)";
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
             stmt.setString(2, email);
-            stmt.setString(3, password); // Store the password as is (plain text)
+            stmt.setString(3, passwordHash); // Store the password as is (plain text)
             stmt.setString(4, accountType);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -27,7 +27,7 @@ public class UserDAO {
 
     // Read user by username (for login validation)
     public ResultSet getUserByUsername(String username) {
-        String sql = "SELECT * FROM users WHERE username = ?";
+        String sql = "SELECT * FROM User WHERE username = ?";
         try {
             Connection conn = databaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -40,11 +40,11 @@ public class UserDAO {
     }
 
     // Update user password (assuming user will provide username for password reset)
-    public boolean updateUserPassword(String username, String newPassword) {
-        String sql = "UPDATE users SET password = ? WHERE username = ?";
+    public boolean updateUserPassword(String username, String newPasswordHash) {
+        String sql = "UPDATE User SET passwordHash = ? WHERE username = ?";
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, newPassword); // Store the password as is (plain text)
+            stmt.setString(1, newPasswordHash); // Store the password as is (plain text)
             stmt.setString(2, username);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -55,7 +55,7 @@ public class UserDAO {
 
     // Delete user by username (for deleting user by username)
     public boolean deleteUser(String username) {
-        String sql = "DELETE FROM users WHERE username = ?";
+        String sql = "DELETE FROM User WHERE username = ?";
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);

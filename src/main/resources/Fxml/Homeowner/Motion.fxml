@@ -5,52 +5,58 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="671.0" prefWidth="833.0" styleClass="Dashboard_container" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/17.0.10" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.Homeowner.MotionController">
-   <children>
-      <VBox layoutX="25.0" layoutY="125.0" prefHeight="100" prefWidth="282.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="63.0" AnchorPane.topAnchor="123.0">
-         <children>
-            <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📡 Active Sensors" />
-            <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="5" />
-         </children>
-      </VBox>
-      <VBox layoutX="384.0" layoutY="125.0" prefHeight="100" prefWidth="275.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="384.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="123.0">
-         <children>
-            <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🚨 Total Alerts Today" />
-            <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="2" />
-         </children>
-      </VBox>
-      <VBox layoutX="25.0" layoutY="260.0" prefHeight="105.0" prefWidth="250.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="63.0">
-         <children>
-            <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🎛 Motion Sensor Control" wrappingWidth="261.74676513671875" />
-            <CheckBox fx:id="enableMotionSensors" selected="true" style="-fx-font-size: 15px; -fx-text-fill: #4b3d2f;" text="Enable Motion Sensors" />
-         </children>
-      </VBox>
-      <VBox layoutX="384.0" layoutY="258.0" prefHeight="109.0" prefWidth="275.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="384.0" AnchorPane.rightAnchor="49.0">
-         <children>
-            <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🕒 Last Motion Detected" />
-            <Text fx:id="lastMotionDetected" style="-fx-font-size: 15px; -fx-fill: #4b3d2f;" text="Living Room - 5 min ago" />
-         </children>
-      </VBox>
-      <VBox layoutX="18.0" layoutY="406.0" prefHeight="223.0" prefWidth="723.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="63.0" AnchorPane.rightAnchor="52.0">
-         <children>
-            <Text style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📈 Motion Detection Trends" />
-            <LineChart fx:id="lightChart" prefHeight="177.0" prefWidth="703.0" title="Motion Alerts Over Time">
-               <xAxis>
-                  <CategoryAxis fx:id="lightXAxis" label="Time (Hours)" />
-               </xAxis>
-               <yAxis>
-                  <NumberAxis fx:id="lightYAxis" label="Motion Count" />
-               </yAxis>
-            </LineChart>
-         </children>
-      </VBox>
-      <AnchorPane prefHeight="59.0" prefWidth="838.0" style="-fx-background-color: #ffffffcc; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
-         <children>
-            <Label layoutX="20.0" layoutY="15.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #555;" text="Smart Home " />
-            <HBox alignment="CENTER_RIGHT" layoutX="750.0" layoutY="10.0" spacing="10" />
-            <Label fx:id="dateTimeLabel" layoutX="201.0" layoutY="18.0" style="-fx-text-fill: #7a7a7a; -fx-font-size: 13px;" text="12:19 PM | Monday, 24th of October, 2024" />
-            <Text fx:id="user_name" layoutX="707.0" layoutY="36.0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #2b2b2b;" text="Hi, Jane👋" />
-         </children>
-      </AnchorPane>
-   </children>
+<AnchorPane prefHeight="671.0" prefWidth="833.0" styleClass="Dashboard_container"
+            stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/17.0.10"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.smarthome3.controllers.Homeowner.MotionController">
+   <VBox layoutX="25.0" layoutY="125.0" prefHeight="100" prefWidth="282.0"
+         style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);"
+         AnchorPane.leftAnchor="63.0" AnchorPane.topAnchor="123.0">
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📡 Active Sensors"/>
+      <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="5"/>
+   </VBox>
+   <VBox layoutX="384.0" layoutY="125.0" prefHeight="100" prefWidth="275.0"
+         style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);"
+         AnchorPane.leftAnchor="384.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="123.0">
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🚨 Total Alerts Today"/>
+      <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="2"/>
+   </VBox>
+   <VBox layoutX="25.0" layoutY="260.0" prefHeight="105.0" prefWidth="250.0"
+         style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);"
+         AnchorPane.leftAnchor="63.0">
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🎛 Motion Sensor Control"
+            wrappingWidth="261.74676513671875"/>
+      <CheckBox fx:id="enableMotionSensors" selected="true" style="-fx-font-size: 15px; -fx-text-fill: #4b3d2f;"
+                text="Enable Motion Sensors"/>
+   </VBox>
+   <VBox layoutX="384.0" layoutY="258.0" prefHeight="109.0" prefWidth="275.0"
+         style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);"
+         AnchorPane.leftAnchor="384.0" AnchorPane.rightAnchor="49.0">
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🕒 Last Motion Detected"/>
+      <Text fx:id="lastMotionDetected" style="-fx-font-size: 15px; -fx-fill: #4b3d2f;"
+            text="Living Room - 5 min ago"/>
+   </VBox>
+   <VBox layoutX="18.0" layoutY="406.0" prefHeight="223.0" prefWidth="723.0"
+         style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);"
+         AnchorPane.leftAnchor="63.0" AnchorPane.rightAnchor="52.0">
+      <Text style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📈 Motion Detection Trends"/>
+      <LineChart fx:id="lightChart" prefHeight="177.0" prefWidth="703.0" title="Motion Alerts Over Time">
+         <xAxis>
+            <CategoryAxis fx:id="lightXAxis" label="Time (Hours)"/>
+         </xAxis>
+         <yAxis>
+            <NumberAxis fx:id="lightYAxis" label="Motion Count"/>
+         </yAxis>
+      </LineChart>
+   </VBox>
+   <AnchorPane prefHeight="59.0" prefWidth="838.0"
+               style="-fx-background-color: #ffffffcc; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
+      <Label layoutX="20.0" layoutY="15.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #555;"
+             text="Smart Home "/>
+      <HBox alignment="CENTER_RIGHT" layoutX="750.0" layoutY="10.0" spacing="10"/>
+      <Label fx:id="dateTimeLabel" layoutX="201.0" layoutY="18.0"
+             style="-fx-text-fill: #7a7a7a; -fx-font-size: 13px;" text="12:19 PM | Monday, 24th of October, 2024"/>
+      <Text fx:id="user_name" layoutX="707.0" layoutY="36.0"
+            style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #2b2b2b;" text="Hi, Jane👋"/>
+   </AnchorPane>
 </AnchorPane>

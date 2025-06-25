@@ -2,13 +2,26 @@ package com.example.smarthome3.controllers.Homeowner;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 public class MotionController implements Initializable  {
     @FXML
     public ListView<String> motion_listview;
+    public Text user_name;
+    public Label dateTimeLabel;
+    public NumberAxis lightYAxis;
+    public CategoryAxis lightXAxis;
+    public LineChart lightChart;
+    public Text lastMotionDetected;
+    public CheckBox enableMotionSensors;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

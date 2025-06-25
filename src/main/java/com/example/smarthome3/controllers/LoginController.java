@@ -46,9 +46,9 @@ public class LoginController implements Initializable {
 
     private void onLogin() {
         String username = user_address_lbl.getText().trim();
-        String password = password_fld.getText();
+        String passwordHash = password_fld.getText();
 
-        if (username.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() || passwordHash.isEmpty()) {
             showAlert(AlertType.ERROR, "Login Error", "Username or password field is empty.");
             return;
         }
@@ -57,11 +57,11 @@ public class LoginController implements Initializable {
             // Fetch user by username
             ResultSet result = userDAO.getUserByUsername(username);
             if (result != null && result.next()) {
-                String storedPassword = result.getString("password");
+                String storedPasswordHash = result.getString("passwordHash");
                 String roleFromDB = result.getString("accountType").toUpperCase();
 
                 // Password check
-                if (storedPassword.equals(password)) {
+                if (storedPasswordHash.equals(passwordHash)) {
                     Model.getInstance().getViewFactory().setLoggedInUser(username);
                     Model.getInstance().setUsername(username);
                     Model.getInstance()
