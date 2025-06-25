@@ -10,8 +10,23 @@ import javafx.scene.layout.AnchorPane;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import java.io.IOException;
 
 public class ViewFactory {
+    public Parent getLightView() throws IOException {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Fxml/Homeowner/Light.fxml"));
+            return loader.load();
+        } catch (IOException e) {
+            System.err.println("❌ Error loading Light view: " + e.getMessage());
+            throw e; // Re-throw to allow caller to handle
+        }
+    }
+
+
+
     private AccountType LoginAccountType;
     // Homeowner Views
     private final StringProperty HomeownerSelectedMenuItem;
@@ -103,7 +118,7 @@ public class ViewFactory {
         return motionView;
     }
 
-    public AnchorPane getLightView() {
+    /*public AnchorPane getLightView() {
         if (lightView == null) {
             try {
                 System.out.println("Loading Light view...");
@@ -116,7 +131,7 @@ public class ViewFactory {
         }
         return lightView;
     }
-    //
+    /*/
 
 
     public void showHomeownerWindow() {

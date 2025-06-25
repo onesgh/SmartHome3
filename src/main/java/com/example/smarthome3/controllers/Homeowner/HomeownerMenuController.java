@@ -23,7 +23,7 @@ public class HomeownerMenuController implements Initializable {
     @FXML
     public Button humidity_btn;
     @FXML
-    public Button profile_btn;
+    public Button notification_btn;
     @FXML
     public Button logout_btn;
     @FXML

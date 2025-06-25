@@ -35,10 +35,10 @@
          <Button fx:id="motion_btn" mnemonicParsing="false" text="      💧 Motion" />
          <Button fx:id="temperature_btn" mnemonicParsing="false" text="   🌡Temperature" />
          <Button fx:id="humidity_btn" mnemonicParsing="false" text="      📡Humidity" />
-         <Line endX="120.0" />
-         <Button fx:id="profile_btn" mnemonicParsing="false" text="         Profile">
+
+         <Button fx:id="notification_btn" mnemonicParsing="false" text="Notification" textAlignment="CENTER">
             <graphic>
-               <FontAwesomeIconView glyphName="USER" text="" wrappingWidth="1.0" />
+               <FontAwesomeIconView glyphName="USER" text="" wrappingWidth="18.0" />
             </graphic>
          </Button>
          <Button fx:id="logout_btn" mnemonicParsing="false" text="     Logout">

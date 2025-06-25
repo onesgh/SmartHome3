@@ -13,6 +13,10 @@ public class MotionController implements Initializable  {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("✅ Motion Dashboard Loaded");
+        if (motion_listview == null) {
+            System.err.println("❌ Error: motion_listview is null. Check FXML file for fx:id='motion_listview'.");
+            return;
+        }
         // Example data (replace with real motion sensor data later)
         motion_listview.getItems().addAll("Living Room: No Motion", "Garage: Motion Detected", "Backyard: No Motion");
     }

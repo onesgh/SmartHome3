@@ -23,7 +23,7 @@ public class App extends Application {
             //e.printStackTrace();
 
        // }
-        Model.getInstance().getViewFactory().showSignUpWindow();
+        Model.getInstance().getViewFactory().showLoginWindow();
 
     }
 }

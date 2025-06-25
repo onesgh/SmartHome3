@@ -14,6 +14,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -118,7 +119,13 @@ public class HomeownerController implements Initializable {
                 case "Humidity" -> Model.getInstance().getViewFactory().getHumidityView();
                 case "Temperature" -> Model.getInstance().getViewFactory().getTemperatureView();
                 case "Motion" -> Model.getInstance().getViewFactory().getMotionView();
-                case "Light" -> Model.getInstance().getViewFactory().getLightView();
+                case "Light" -> {
+                    try {
+                        yield Model.getInstance().getViewFactory().getLightView();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 default -> Model.getInstance().getViewFactory().getDashboardView();
             };
 
