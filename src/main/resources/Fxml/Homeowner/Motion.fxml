@@ -40,12 +40,12 @@
          style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);"
          AnchorPane.leftAnchor="63.0" AnchorPane.rightAnchor="52.0">
       <Text style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📈 Motion Detection Trends"/>
-      <LineChart fx:id="lightChart" prefHeight="177.0" prefWidth="703.0" title="Motion Alerts Over Time">
+      <LineChart fx:id="motionChart" prefHeight="177.0" prefWidth="703.0" title="Motion Alerts Over Time">
          <xAxis>
-            <CategoryAxis fx:id="lightXAxis" label="Time (Hours)"/>
+            <CategoryAxis fx:id="MotionXAxis" label="Time (Hours)"/>
          </xAxis>
          <yAxis>
-            <NumberAxis fx:id="lightYAxis" label="Motion Count"/>
+            <NumberAxis fx:id="MotionYAxis" label="Motion Count"/>
          </yAxis>
       </LineChart>
    </VBox>

@@ -2,7 +2,7 @@
 
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="homeowner_parent"  prefHeight="702.0" prefWidth="992.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="homeowner_parent"  prefHeight="702.0" prefWidth="992.0" xmlns="http://javafx.com/javafx/17.0.10" xmlns:fx="http://javafx.com/fxml/1">
     <left>
        <fx:include source="Homeownermenu.fxml" />
     </left>
