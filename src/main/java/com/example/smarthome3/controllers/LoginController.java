@@ -3,6 +3,8 @@ package com.example.smarthome3.controllers;
 import com.example.smarthome3.Models.Model;
 import com.example.smarthome3.Database.DatabaseConnector;
 import com.example.smarthome3.Database.UserDAO;
+import com.example.smarthome3.Database.User;
+import com.example.smarthome3.Database.UserSession;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -18,8 +20,10 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
+
     @FXML
     public Label DontHaveAccount;
+
     @FXML
     private TextField user_address_lbl; // Username field
 
@@ -43,7 +47,6 @@ public class LoginController implements Initializable {
         login_btn.setOnAction(event -> onLogin());
 
         // Sign up button opens sign-up window
-       // Signin_btn.setOnAction(event -> openSignUpWindow());
         DontHaveAccount.setOnMouseClicked(event -> openSignUpWindow());
 
         // Optional: style the label like a link
@@ -68,12 +71,18 @@ public class LoginController implements Initializable {
 
                 // Password check
                 if (storedPasswordHash.equals(passwordHash)) {
+                    int userId = result.getInt("UserId"); // 🔑 Make sure this column exists in your table
+                    // ✅ Initialize the UserSession globally for future access
+                    User user = new User(userId, username);
+                    UserSession.init(user);
+
+                    // Continue with Model-based navigation
                     Model.getInstance().getViewFactory().setLoggedInUser(username);
                     Model.getInstance().setUsername(username);
                     Model.getInstance()
                             .setUserRole(Enum.valueOf(com.example.smarthome3.Views.AccountType.class, roleFromDB));
 
-                    System.out.println(" Login successful as " + roleFromDB);
+                    System.out.println("✅ Login successful as " + roleFromDB);
                     openDashboard(roleFromDB);
                 } else {
                     showAlert(AlertType.ERROR, "Login Error", "Incorrect password.");
@@ -102,7 +111,7 @@ public class LoginController implements Initializable {
                 Model.getInstance().getViewFactory().showSecurityGuardWindow();
                 break;
             default:
-                System.out.println(" Unknown account type.");
+                System.out.println("❌ Unknown account type.");
                 showAlert(AlertType.ERROR, "Unknown Account", "Unknown account type. Please contact support.");
         }
     }

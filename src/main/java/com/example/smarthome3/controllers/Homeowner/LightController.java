@@ -1,4 +1,9 @@
 package com.example.smarthome3.controllers.Homeowner;
+
+import com.example.smarthome3.Database.DatabaseConnector;
+import com.example.smarthome3.Database.User;
+import com.example.smarthome3.Database.UserSession;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
@@ -7,54 +12,40 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Slider;
 import javafx.scene.text.Text;
-import java.sql.Connection;
+
 import java.net.URL;
-import com.example.smarthome3.Database.DatabaseConnector;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
 import java.util.ResourceBundle;
 
 public class LightController implements Initializable {
-    @FXML
-    public ListView<String> light_listview;
-    @FXML
-    public Text user_name;
-    @FXML
-    public Label dateTimeLabel;
-    @FXML
-    public NumberAxis lightYAxis;
-    @FXML
-    public CategoryAxis lightXAxis;
-    @FXML
-    public LineChart lightChart;
-    @FXML
-    public Slider brightnessSlider;
-    public Text lightsOnId;
-    public Text AutoStatusId;
-    public Text TotalLightsId;
-    public Text BrightnessId;
+
+    @FXML public ListView<String> light_listview;
+    @FXML public Text user_name;
+    @FXML public Label dateTimeLabel;
+    @FXML public NumberAxis lightYAxis;
+    @FXML public CategoryAxis lightXAxis;
+    @FXML public LineChart<String, Number> lightChart;
+    @FXML public Text maxLightId;
+    @FXML public Text minLightId;
+    @FXML public Text currentLightId;
+
     private Connection connection;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("✅ Light Dashboard Loaded");
+
         try {
             connection = DatabaseConnector.getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
         updateDateTime();
-        if (lightChart != null && lightXAxis != null && lightYAxis != null) {
-            lightXAxis.setLabel("Time (Hours)");
-            lightYAxis.setLabel("Light (Lux)");
-            lightYAxis.setAutoRanging(true);
-            loadLightData();
-        }
+        loadLightData();
     }
 
     private void updateDateTime() {
@@ -66,14 +57,14 @@ public class LightController implements Initializable {
                 now.getDayOfMonth() + daySuffix
         );
         dateTimeLabel.setText(formattedDate);
-        user_name.setText("Hi, " + com.example.smarthome3.Models.Model.getInstance().getViewFactory().getLoggedInUser() + " 👋");
+
+        User currentUser = UserSession.getInstance().getUser();
+        if (currentUser != null) {
+            user_name.setText("Hi, " + currentUser.getName() + " 👋");
+        }
     }
 
     private String getDayOfMonthSuffix(int day) {
-        return getString(day);
-    }
-
-    static String getString(int day) {
         if (day >= 11 && day <= 13) return "th";
         return switch (day % 10) {
             case 1 -> "st";
@@ -85,16 +76,31 @@ public class LightController implements Initializable {
 
     private void loadLightData() {
         if (connection == null) return;
+
+        User currentUser = UserSession.getInstance().getUser();
+        if (currentUser == null) return;
+
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Light Intensity");
 
-        String query = "SELECT recorded_at, light_lux FROM Sensor WHERE light_lux IS NOT NULL ORDER BY recorded_at";
+        String query = """
+            SELECT s.recorded_at, s.light_lux
+            FROM Sensor s
+            JOIN Home h ON s.HomeId = h.HomeId
+            WHERE h.OwnerId = ?
+            ORDER BY s.recorded_at
+        """;
 
-        try (PreparedStatement stmt = connection.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, currentUser.getID());
+            ResultSet rs = stmt.executeQuery();
 
             light_listview.getItems().clear();
             int count = 0;
+            double max = Double.MIN_VALUE;
+            double min = Double.MAX_VALUE;
+            double last = 0;
+
             while (rs.next()) {
                 if (count++ % 3 != 0) continue;
 
@@ -103,10 +109,18 @@ public class LightController implements Initializable {
                 String formattedTime = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
 
                 double lux = rs.getDouble("light_lux");
-                series.getData().add(new XYChart.Data<>(formattedTime, lux));
+                last = lux;
 
+                max = Math.max(max, lux);
+                min = Math.min(min, lux);
+
+                series.getData().add(new XYChart.Data<>(formattedTime, lux));
                 light_listview.getItems().add(formattedTime + ": " + String.format("%.2f", lux) + " lx");
             }
+
+            maxLightId.setText(String.format("%.2f lx", max));
+            minLightId.setText(String.format("%.2f lx", min));
+            currentLightId.setText(String.format("%.2f lx", last));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -117,30 +131,4 @@ public class LightController implements Initializable {
         lightXAxis.setTickLabelRotation(45);
         lightChart.layout();
     }
-    private void loadLightSummaryFromDatabase() {
-        if (connection == null) return;
-
-        String query = "SELECT *FROM Reading WHERE SensorId=?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            if (rs.next()) {
-                int lightsOn = rs.getInt("lights_on");
-                String autoStatus = rs.getString("auto_status");
-                int totalLights = rs.getInt("total_lights");
-                int brightness = rs.getInt("brightness");
-
-                lightsOnId.setText(String.valueOf(lightsOn));
-                AutoStatusId.setText(autoStatus);
-                TotalLightsId.setText(String.valueOf(totalLights));
-                BrightnessId.setText(brightness + " %");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }

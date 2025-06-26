@@ -7,7 +7,7 @@
 
 <AnchorPane prefHeight="671.0" prefWidth="833.0" styleClass="Dashboard_container" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.Homeowner.MotionController">
    <VBox layoutX="25.0" layoutY="125.0" prefHeight="100" prefWidth="282.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="63.0" AnchorPane.topAnchor="123.0">
-      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📡 Active Sensors" />
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📡 Motion Detected" />
       <Text fx:id="ActiveSensorId" style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="5" />
    </VBox>
    <VBox layoutX="384.0" layoutY="125.0" prefHeight="100" prefWidth="275.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="384.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="123.0">
@@ -20,7 +20,7 @@
    </VBox>
    <VBox layoutX="384.0" layoutY="258.0" prefHeight="109.0" prefWidth="275.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="384.0" AnchorPane.rightAnchor="49.0">
       <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🕒 Last Motion Detected" />
-      <Text fx:id="lastMotionDetectedId" style="-fx-font-size: 15px; -fx-fill: #4b3d2f;" text="Living Room - 5 min ago" />
+      <Text fx:id="lastMotionDetectedId" style="-fx-font-size: 15px; -fx-fill: #4b3d2f;" text="2025-06-25 08:15:00" />
    </VBox>
    <VBox layoutX="18.0" layoutY="406.0" prefHeight="223.0" prefWidth="723.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="63.0" AnchorPane.rightAnchor="52.0">
       <Text style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📈 Motion Detection Trends" />

@@ -1,6 +1,9 @@
 package com.example.smarthome3.controllers.Homeowner;
-import com.example.smarthome3.Database.DatabaseConnector;
 
+import com.example.smarthome3.Database.DatabaseConnector;
+import com.example.smarthome3.Models.Model;
+import com.example.smarthome3.Database.User;
+import com.example.smarthome3.Database.UserSession;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
@@ -10,70 +13,38 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import java.net.URL;
+import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
-public class MotionController implements Initializable  {
 
-    public Text user_name;
-    @FXML
-    public Label dateTimeLabel;
-    @FXML
-    public LineChart motionChart;
-    @FXML
-    public Text lastMotionDetected;
-    @FXML
-    public CheckBox enableMotionSensors;
-    @FXML
-    public CategoryAxis MotionXAxis;
-    @FXML
-    public NumberAxis MotionYAxis;
-    public Text lastMotionDetectedId;
-    public Text AlertsTId;
-    public Text ActiveSensorId;
+public class MotionController implements Initializable {
+
+    @FXML public Text user_name;
+    @FXML public Label dateTimeLabel;
+    @FXML public LineChart<String, Number> motionChart;
+    @FXML public Text lastMotionDetectedId;
+    @FXML public CheckBox enableMotionSensors;
+    @FXML public CategoryAxis MotionXAxis;
+    @FXML public NumberAxis MotionYAxis;
+    @FXML public Text AlertsTId;
+    @FXML public Text ActiveSensorId;
 
     private Connection connection;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             connection = DatabaseConnector.getConnection();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("DB connection error", e);
         }
+
         updateDateTime();
         loadMotionData();
-    }
-
-    private void loadMotionData() { XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Motion");
-
-        String query = "SELECT recorded_at, motion FROM Sensor WHERE motion IS NOT NULL ORDER BY recorded_at";
-
-        try (PreparedStatement stmt = connection.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            int count = 0;
-            while (rs.next()) {
-                if (count++ % 3 != 0) continue;
-                String timestamp = rs.getString("recorded_at");
-                LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                String formattedTime = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
-                int motionValue = rs.getInt("motion"); // assuming motion is stored as 0/1
-                series.getData().add(new XYChart.Data<>(formattedTime, motionValue));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-    }
-        motionChart.getData().clear();
-        motionChart.getData().add(series);
-        MotionXAxis.setTickLabelRotation(45);
     }
 
     private void updateDateTime() {
@@ -85,8 +56,91 @@ public class MotionController implements Initializable  {
                 now.getDayOfMonth() + daySuffix
         );
         dateTimeLabel.setText(formattedDate);
-        user_name.setText("Hi, " + com.example.smarthome3.Models.Model.getInstance().getViewFactory().getLoggedInUser() + " 👋");
+
+        String username = Model.getInstance().getViewFactory().getLoggedInUser();
+        user_name.setText("Hi, " + username + " 👋");
     }
+
+    private void loadMotionData() {
+        User user = UserSession.getInstance().getUser();
+        if (user == null) {
+            System.err.println("User is not logged in.");
+            return;
+        }
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Motion");
+
+        String motionQuery = """
+            SELECT s.recorded_at, s.motion
+            FROM Sensor s
+            JOIN Home h ON s.HomeId = h.HomeId
+            WHERE s.motion IS NOT NULL AND h.OwnerId = ?
+            ORDER BY s.recorded_at
+        """;
+
+        String sensorStatusQuery = """
+            SELECT s.is_active
+            FROM Sensor s
+            JOIN Home h ON s.HomeId = h.HomeId
+            WHERE h.OwnerId = ?
+            LIMIT 1
+        """;
+
+        int totalMotions = 0;
+        int todayAlerts = 0;
+        String lastMotion = "N/A";
+
+        try (PreparedStatement stmt = connection.prepareStatement(motionQuery)) {
+            stmt.setInt(1, user.getID());
+            ResultSet rs = stmt.executeQuery();
+
+            int count = 0;
+            while (rs.next()) {
+                String timestamp = rs.getString("recorded_at");
+                int motion = rs.getInt("motion");
+
+                if (motion > 0) {
+                    totalMotions++;
+                    LocalDate motionDate = LocalDate.parse(timestamp.substring(0, 10));
+                    if (motionDate.equals(LocalDate.now())) {
+                        todayAlerts++;
+                    }
+                    lastMotion = timestamp;
+                }
+
+                if (count++ % 3 == 0) {
+                    LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    String formattedTime = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
+                    series.getData().add(new XYChart.Data<>(formattedTime, motion));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Update chart
+        motionChart.getData().clear();
+        motionChart.getData().add(series);
+        MotionXAxis.setTickLabelRotation(45);
+
+        // Update labels
+        ActiveSensorId.setText(String.valueOf(totalMotions));
+        AlertsTId.setText(String.valueOf(todayAlerts));
+        lastMotionDetectedId.setText(lastMotion);
+
+        // Update checkbox (is_active)
+        try (PreparedStatement ps = connection.prepareStatement(sensorStatusQuery)) {
+            ps.setInt(1, user.getID());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                enableMotionSensors.setSelected(rs.getBoolean("is_active"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String getDayOfMonthSuffix(int day) {
         if (day >= 11 && day <= 13) return "th";
         return switch (day % 10) {
@@ -96,4 +150,4 @@ public class MotionController implements Initializable  {
             default -> "th";
         };
     }
-    }
+}

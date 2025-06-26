@@ -3,7 +3,7 @@ module com.example.smarthome3{
     requires javafx.fxml;
     requires de.jensd.fx.glyphs.fontawesome;
     requires java.sql;
-
+    requires com.sun.jna.platform;
 
 
     opens com.example.smarthome3 to javafx.fxml;

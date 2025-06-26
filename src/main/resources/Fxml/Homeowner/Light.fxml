@@ -7,12 +7,12 @@
 
 <AnchorPane prefHeight="671.0" prefWidth="833.0" styleClass="Dashboard_container" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.Homeowner.LightController">
    <VBox layoutX="63.0" layoutY="80.0" prefHeight="100" prefWidth="251.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="63.0" AnchorPane.topAnchor="123.0">
-      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="💡 Lights On" wrappingWidth="137.693359375">
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="💡 maximum light intensity" wrappingWidth="293.693359375">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="lightsOnId" style="-fx-font-size: 20px; -fx-fill: #4a2e18;" text="5">
+      <Text fx:id="maxLightId" style="-fx-font-size: 20px; -fx-fill: #4a2e18;" text="250">
          <font>
             <Font size="10.0" />
          </font>
@@ -22,9 +22,18 @@
       <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="⚙ Automation Status" />
       <Text fx:id="AutoStatusId" style="-fx-font-size: 20px; -fx-fill: #4a2e18;" text="Enabled" />
    </VBox>
-   <VBox layoutX="63.0" layoutY="263.0" prefHeight="100" prefWidth="251.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
-      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="💡 Total Lights" />
-      <Text fx:id="TotalLightsId" style="-fx-font-size: 20px; -fx-fill: #4a2e18;" text="12" />
+   <VBox layoutX="63.0" layoutY="263.0" prefHeight="100" prefWidth="314.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+      <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="💡 minimum light intensity" />
+      <Text fx:id="minLightId" style="-fx-font-size: 20px; -fx-fill: #4a2e18;" text="453" />
+   </VBox>
+   <VBox>
+      <AnchorPane prefHeight="59.0" prefWidth="839.0" style="-fx-background-color: #ffffffcc; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
+         <Label layoutX="24.0" layoutY="17.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #555;" text=" Smart Home " />
+         <HBox alignment="CENTER_RIGHT" layoutX="750.0" layoutY="10.0" spacing="10" />
+         <Label fx:id="dateTimeLabel" layoutX="201.0" layoutY="18.0" style="-fx-text-fill: #7a7a7a; -fx-font-size: 13px;" text="12:19 PM | Monday, 24th of October, 2024" />
+         <Text fx:id="user_name" layoutX="707.0" layoutY="36.0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #2b2b2b;" text="Hi, Jane👋" />
+      </AnchorPane>
+      <Text fx:id="currentLightId" style="-fx-font-size: 16px;" />
    </VBox>
    <VBox layoutX="401.0" layoutY="263.0" prefHeight="100.0" prefWidth="371.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.rightAnchor="61.0">
       <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🌞 Brightness Control" />
@@ -43,11 +52,6 @@
          </yAxis>
       </LineChart>
    </VBox>
-   <AnchorPane prefHeight="59.0" prefWidth="839.0" style="-fx-background-color: #ffffffcc; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
-      <Label layoutX="20.0" layoutY="15.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #555;" text=" Smart Home " />
-      <HBox alignment="CENTER_RIGHT" layoutX="750.0" layoutY="10.0" spacing="10" />
-      <Label fx:id="dateTimeLabel" layoutX="201.0" layoutY="18.0" style="-fx-text-fill: #7a7a7a; -fx-font-size: 13px;" text="12:19 PM | Monday, 24th of October, 2024" />
-      <Text fx:id="user_name" layoutX="707.0" layoutY="36.0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #2b2b2b;" text="Hi, Jane👋" />
-   </AnchorPane>
+   <Label layoutX="-12.0" layoutY="-19.0" text="Current Light" />
 
 </AnchorPane>
