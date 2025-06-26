@@ -8,19 +8,19 @@
 <AnchorPane prefHeight="671.0" prefWidth="833.0" styleClass="Dashboard_container" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.Homeowner.TemperatureController">
     <VBox layoutX="90.0" layoutY="100.0" prefHeight="100" prefWidth="263.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.topAnchor="123.0">
         <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🌡 Current Temperature" />
-        <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="22°C" />
+        <Text fx:id="CurrentTemperatureId" style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="22°C" />
     </VBox>
     <VBox layoutX="350.0" layoutY="100.0" prefHeight="100" prefWidth="340.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.rightAnchor="61.0" AnchorPane.topAnchor="123.33333333333333">
         <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🌞 Highest Temperature" />
-        <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="30°C" />
+        <Text fx:id="HighestTempId" style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="30°C" />
     </VBox>
     <VBox layoutX="90.0" layoutY="236.0" prefHeight="100" prefWidth="263.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
         <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="❄ Lowest Temperature" />
-        <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="18°C" />
+        <Text fx:id="LowestTempId" style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="18°C" />
     </VBox>
     <VBox layoutX="349.0" layoutY="236.0" prefHeight="100.0" prefWidth="340" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.rightAnchor="61.0">
         <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🎛 Adjust Temperature" />
-        <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="22°C" />
+        <Text fx:id="AdjustTempId" style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="22°C" />
         <Slider fx:id="temperatureSlider" max="35" min="15" prefHeight="25.0" prefWidth="287.0" style="-fx-padding: 5 0 5 0;" value="22" />
 
     </VBox>

@@ -35,11 +35,19 @@ public class LightController implements Initializable {
     public LineChart lightChart;
     @FXML
     public Slider brightnessSlider;
+    public Text lightsOnId;
+    public Text AutoStatusId;
+    public Text TotalLightsId;
+    public Text BrightnessId;
     private Connection connection;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("✅ Light Dashboard Loaded");
-        connection = DatabaseConnector.getConnection();
+        try {
+            connection = DatabaseConnector.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         updateDateTime();
         if (lightChart != null && lightXAxis != null && lightYAxis != null) {
             lightXAxis.setLabel("Time (Hours)");
@@ -109,5 +117,30 @@ public class LightController implements Initializable {
         lightXAxis.setTickLabelRotation(45);
         lightChart.layout();
     }
+    private void loadLightSummaryFromDatabase() {
+        if (connection == null) return;
 
+        String query = "SELECT *FROM Reading WHERE SensorId=?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                int lightsOn = rs.getInt("lights_on");
+                String autoStatus = rs.getString("auto_status");
+                int totalLights = rs.getInt("total_lights");
+                int brightness = rs.getInt("brightness");
+
+                lightsOnId.setText(String.valueOf(lightsOn));
+                AutoStatusId.setText(autoStatus);
+                TotalLightsId.setText(String.valueOf(totalLights));
+                BrightnessId.setText(brightness + " %");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+
+}

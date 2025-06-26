@@ -3,40 +3,41 @@ package com.example.smarthome3.Database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class DatabaseConnector {
+    // Configuration constants (ideally loaded from a config file or env variables)
+    private static final String DB_URL = "jdbc:mariadb://195.235.211.197/pii2_SmartSphere";
+    private static final String DB_USER = "pii2_SmartSphere";
+    private static final String DB_PASSWORD = "Smarthome1";
+    private static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
 
     // Method to establish and return a database connection
-    public static Connection getConnection() {
-        Connection connection = null;
+    public static Connection getConnection() throws SQLException {
         try {
-            // Load MySQL JDBC Driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            // Remote DB connection URL, username, password
-            String url = "jdbc:mysql://195.235.211.197:3306/pii2_SmartSphere";  // your remote DB URL
-            String user = "pii2_SmartSphere";                      // your remote DB username
-            String password = "Smarthome1";                  // your remote DB password
-
-            // Establish connection with the remote database
-            connection = DriverManager.getConnection(url, user, password);
+            // Load MariaDB JDBC Driver
+            Class.forName(JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
-            System.out.println("MySQL JDBC Driver not found: " + e.getMessage());
-        } catch (SQLException e) {
-            System.out.println("Database connection failed: " + e.getMessage());
+            throw new SQLException("MariaDB JDBC Driver not found: " + e.getMessage(), e);
         }
+
+        // Establish connection
+        Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+
+        // Validate connection
+        if (connection == null || connection.isClosed()) {
+            throw new SQLException("Failed to establish a valid database connection");
+        }
+
         return connection;
     }
 
+    // Test method to verify connection (optional, consider moving to a test class)
     public static void main(String[] args) {
-        try (Connection myConnection = getConnection()) {
-            if (myConnection != null) {
-                System.out.println("Database connection established successfully.");
-            } else {
-                System.out.println("Failed to establish a database connection.");
-            }
+        try (Connection connection = getConnection()) {
+            System.out.println("Database connection established successfully.");
         } catch (SQLException e) {
-            System.out.println("Failed to close database connection: " + e.getMessage());
+            System.err.println("Database connection failed: " + e.getMessage());
         }
     }
 }

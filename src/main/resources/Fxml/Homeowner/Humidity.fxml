@@ -4,42 +4,35 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="671.0" prefWidth="833.0" styleClass="Dashboard_container" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/17.0.10" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.Homeowner.HumidityController">
-   <AnchorPane prefHeight="59.0" prefWidth="833.0" style="-fx-background-color: #ffffffcc; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
-      <children>
-         <Label layoutX="20.0" layoutY="15.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #555;" text="Smart Home" />
-         <Label  fx:id="dateTimeLabel" layoutX="200.0" layoutY="18.0" style="-fx-text-fill: #7a7a7a; -fx-font-size: 13px;" text="12:19 PM | Monday, 24th of October, 2024" />
-         <Text fx:id="user_name" layoutX="718.0" layoutY="35.0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #2b2b2b;" text="Hi, Jane 👋" />
-      </children>
-   </AnchorPane>
-   <VBox layoutX="35.0" layoutY="95.0" prefHeight="100" prefWidth="280.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10;                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="63.0" AnchorPane.topAnchor="123.0">
-      <children>
-         <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="💧 Average Humidity" />
-         <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="55%" />
-      </children>
-   </VBox>
-   <VBox layoutX="374.0" layoutY="95.0" prefHeight="100" prefWidth="280.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10;                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="123.0">
-      <children>
-         <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🌫 Highest Humidity" />
-         <Text style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="70%" />
-      </children>
-   </VBox>
-   <VBox layoutX="63.333333333333336" layoutY="297.0" prefHeight="290.0" prefWidth="693.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10;                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="63.0" AnchorPane.rightAnchor="77.0">
-      <children>
-         <Text style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📊 Humidity Trends" />
-         <LineChart fx:id="humidityChart" prefHeight="230.0" prefWidth="600.0" title="Humidity Over Time">
+    <AnchorPane prefHeight="59.0" prefWidth="833.0" style="-fx-background-color: #ffffffcc; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
+        <Label layoutX="20.0" layoutY="15.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #555;" text="Smart Home" />
+        <Label fx:id="dateTimeLabel" layoutX="200.0" layoutY="18.0" style="-fx-text-fill: #7a7a7a; -fx-font-size: 13px;" text="12:19 PM | Monday, 24th of October, 2024" />
+        <Text fx:id="user_name" layoutX="718.0" layoutY="35.0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #2b2b2b;" text="Hi, Jane 👋" />
+    </AnchorPane>
+    <VBox layoutX="35.0" layoutY="95.0" prefHeight="100.0" prefWidth="280.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="63.0" AnchorPane.topAnchor="123.0">
+        <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="💧 Average Humidity" />
+        <Text fx:id="avgHumidityText" style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="55%" />
+    </VBox>
+    <VBox layoutX="374.0" layoutY="95.0" prefHeight="100.0" prefWidth="280.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="123.0">
+        <Text style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="🌫 Highest Humidity" />
+        <Text fx:id="maxHumidityText" style="-fx-font-size: 18px; -fx-fill: #4a2e18;" text="70%" />
+    </VBox>
+    <VBox layoutX="63.333333333333336" layoutY="297.0" prefHeight="290.0" prefWidth="693.0" style="-fx-background-color: #ffffffcc; -fx-background-radius: 15; -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);" AnchorPane.leftAnchor="63.0" AnchorPane.rightAnchor="77.0">
+        <Text style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-fill: #4a2e18;" text="📊 Humidity Trends" />
+        <LineChart fx:id="humidityChart" prefHeight="230.0" prefWidth="600.0" title="Humidity Over Time">
             <xAxis>
-               <CategoryAxis label="Time (Days)" fx:id="xAxis" />
+                <CategoryAxis fx:id="xAxis" label="Time (Days)" />
             </xAxis>
             <yAxis>
-               <NumberAxis fx:id="yAxis" label="Humidity (%)" lowerBound="0" upperBound="100" />
+                <NumberAxis fx:id="yAxis" label="Humidity (%)" lowerBound="0" upperBound="100" />
             </yAxis>
-         </LineChart>
-      </children>
-   </VBox>
-
+        </LineChart>
+        <ListView fx:id="humidity_listview" prefHeight="100.0" prefWidth="600.0" />
+    </VBox>
 </AnchorPane>

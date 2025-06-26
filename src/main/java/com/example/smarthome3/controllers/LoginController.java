@@ -6,6 +6,7 @@ import com.example.smarthome3.Database.UserDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -17,7 +18,8 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
-
+    @FXML
+    public Label DontHaveAccount;
     @FXML
     private TextField user_address_lbl; // Username field
 
@@ -41,7 +43,11 @@ public class LoginController implements Initializable {
         login_btn.setOnAction(event -> onLogin());
 
         // Sign up button opens sign-up window
-        Signin_btn.setOnAction(event -> openSignUpWindow());
+       // Signin_btn.setOnAction(event -> openSignUpWindow());
+        DontHaveAccount.setOnMouseClicked(event -> openSignUpWindow());
+
+        // Optional: style the label like a link
+        DontHaveAccount.setStyle("-fx-text-fill: blue; -fx-underline: true; -fx-cursor: hand;");
     }
 
     private void onLogin() {
@@ -102,7 +108,7 @@ public class LoginController implements Initializable {
     }
 
     private void openSignUpWindow() {
-        Stage stage = (Stage) Signin_btn.getScene().getWindow();
+        Stage stage = (Stage) DontHaveAccount.getScene().getWindow();
         Model.getInstance().getViewFactory().closeStage(stage);
         Model.getInstance().getViewFactory().showSignUpWindow();
     }

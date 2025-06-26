@@ -32,8 +32,7 @@
             <Font size="10.0" />
          </font>
       </Button>
-      <Label text="Don't have an account ?" />
-      <Button fx:id="Signin_btn" mnemonicParsing="false" opacity="0.85" prefHeight="36.0" prefWidth="356.0" style="-fx-background-color: #6C4F37;" text="Sign up " textFill="#000000" />
+      <Label fx:id="DontHaveAccount" text="Don't have an account ?" />
    </VBox>
 
 </AnchorPane>

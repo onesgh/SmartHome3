@@ -78,14 +78,8 @@
             </font>
         </Button>
       <VBox prefHeight="29.0" prefWidth="350.0" />
-      <Label style="-fx-font-size: 12px; -fx-text-fill: #555;" text="Have an account?" />
-        <VBox prefHeight="43.0" prefWidth="249.0">
-            <Button fx:id="SignInBtn1" mnemonicParsing="false" opacity="0.85" prefHeight="39.0" prefWidth="356.0" style="-fx-background-color: #6C4F37;" text="Sign In" textFill="#020202">
-                <font>
-                    <Font size="12.0" />
-                </font>
-            </Button>
-        </VBox>
+      <Label fx:id="HaveAccount" style="-fx-font-size: 12px; -fx-text-fill: #555;" text="Have an account?" />
+        <VBox prefHeight="43.0" prefWidth="249.0" />
     </VBox>
 
 </AnchorPane>

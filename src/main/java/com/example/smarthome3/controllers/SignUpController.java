@@ -17,7 +17,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SignUpController implements Initializable {
-
+    @FXML
+    public Label HaveAccount;
     @FXML
     private ChoiceBox<String> acc_selector;
 
@@ -59,9 +60,13 @@ public class SignUpController implements Initializable {
         signUpBtn.setOnAction(event -> onSignup());
 
         // Navigate to the login screen
-        SignInBtn1.setOnAction(event -> openLoginDashboard());
-    }
+       // SignInBtn1.setOnAction(event -> openLoginDashboard());
+        // "Have account?" label action
+        HaveAccount.setOnMouseClicked(event -> openLoginDashboard());
 
+        // Optional: style the label like a link
+        HaveAccount.setStyle("-fx-text-fill: blue; -fx-underline: true; -fx-cursor: hand;");
+    }
     private void onSignup() {
         String username = usernameField.getText();
         String password = passwordField.getText();
@@ -111,7 +116,7 @@ public class SignUpController implements Initializable {
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Login Dashboard");
             stage.show();
-            ((Stage) SignInBtn1.getScene().getWindow()).close();
+            ((Stage) HaveAccount.getScene().getWindow()).close();
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to load the login page.");

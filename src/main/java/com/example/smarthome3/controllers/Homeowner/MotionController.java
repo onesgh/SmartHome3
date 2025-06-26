@@ -9,7 +9,6 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,9 +20,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 public class MotionController implements Initializable  {
-    @FXML
-    public ListView<String> motion_listview;
-    @FXML
+
     public Text user_name;
     @FXML
     public Label dateTimeLabel;
@@ -37,11 +34,18 @@ public class MotionController implements Initializable  {
     public CategoryAxis MotionXAxis;
     @FXML
     public NumberAxis MotionYAxis;
+    public Text lastMotionDetectedId;
+    public Text AlertsTId;
+    public Text ActiveSensorId;
 
     private Connection connection;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        connection = DatabaseConnector.getConnection();
+        try {
+            connection = DatabaseConnector.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         updateDateTime();
         loadMotionData();
     }

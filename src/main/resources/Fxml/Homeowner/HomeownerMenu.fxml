@@ -3,10 +3,9 @@
 <?import de.jensd.fx.glyphs.fontawesome.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="180.0" styleClass="main_menu_container" stylesheets="@../../Styles/HomeownerMenu.css" xmlns="http://javafx.com/javafx/17.0.10" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.Homeowner.HomeownerMenuController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="180.0" styleClass="main_menu_container" stylesheets="@../../Styles/HomeownerMenu.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smarthome3.controllers.Homeowner.HomeownerMenuController">
    <AnchorPane prefHeight="750.0" prefWidth="180.0" styleClass="left_container">
       <VBox prefHeight="80.0" prefWidth="160.0" styleClass="title_container" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <AnchorPane prefHeight="0.0" prefWidth="151.0" />
@@ -36,9 +35,9 @@
          <Button fx:id="temperature_btn" mnemonicParsing="false" text="   🌡Temperature" />
          <Button fx:id="humidity_btn" mnemonicParsing="false" text="      📡Humidity" />
 
-         <Button fx:id="notification_btn" mnemonicParsing="false" text="Notification" textAlignment="CENTER">
+         <Button fx:id="Alert_btn" mnemonicParsing="false" text="notification" textAlignment="CENTER">
             <graphic>
-               <FontAwesomeIconView glyphName="USER" text="" wrappingWidth="18.0" />
+               <FontAwesomeIconView glyphName="USER" text="" wrappingWidth="17.999996185302734" />
             </graphic>
          </Button>
          <Button fx:id="logout_btn" mnemonicParsing="false" text="     Logout">

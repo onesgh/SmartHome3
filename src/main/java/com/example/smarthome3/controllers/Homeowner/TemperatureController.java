@@ -32,10 +32,18 @@ public class TemperatureController  implements Initializable {
     public LineChart TemperatureChart;
     @FXML
     public Slider temperatureSlider;
+    public Text CurrentTemperatureId;
+    public Text HighestTempId;
+    public Text LowestTempId;
+    public Text AdjustTempId;
     private Connection connection;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        connection = DatabaseConnector.getConnection();
+        try {
+            connection = DatabaseConnector.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         updateDateTime();
         loadTemperatureData();
     }

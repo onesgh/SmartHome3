@@ -16,7 +16,7 @@ public class UserDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
             stmt.setString(2, email);
-            stmt.setString(3, passwordHash); // Store the password as is (plain text)
+            stmt.setString(3, passwordHash);
             stmt.setString(4, accountType);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -26,25 +26,24 @@ public class UserDAO {
     }
 
     // Read user by username (for login validation)
-    public ResultSet getUserByUsername(String username) {
+    public ResultSet getUserByUsername(String username) throws SQLException {
         String sql = "SELECT * FROM User WHERE username = ?";
-        try {
-            Connection conn = databaseConnector.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql);
+        try (Connection conn = databaseConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
-            return stmt.executeQuery();
+            return stmt.executeQuery(); // Caller must close ResultSet, Statement, and Connection
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            throw e; // Rethrow to let caller handle
         }
     }
 
-    // Update user password (assuming user will provide username for password reset)
+    // Update user password
     public boolean updateUserPassword(String username, String newPasswordHash) {
         String sql = "UPDATE User SET passwordHash = ? WHERE username = ?";
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, newPasswordHash); // Store the password as is (plain text)
+            stmt.setString(1, newPasswordHash);
             stmt.setString(2, username);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -53,7 +52,7 @@ public class UserDAO {
         }
     }
 
-    // Delete user by username (for deleting user by username)
+    // Delete user by username
     public boolean deleteUser(String username) {
         String sql = "DELETE FROM User WHERE username = ?";
         try (Connection conn = databaseConnector.getConnection();

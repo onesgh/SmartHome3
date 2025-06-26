@@ -5,6 +5,7 @@ import com.example.smarthome3.controllers.Homeowner.HomeownerController;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +36,7 @@ public class ViewFactory {
     private AnchorPane temperatureView;
     private AnchorPane motionView;
     private AnchorPane lightView;
+    private AnchorPane alertView;
     // Technician Views
 // Add this field to store the logged-in username
     private String loggedInUser;
@@ -89,6 +91,17 @@ public class ViewFactory {
         }
         return humidityView;
     }
+    public AnchorPane getAlertView() {
+        if (alertView == null) {
+            try {
+                alertView = new FXMLLoader(getClass().getResource("/Fxml/Homeowner/Alert.fxml")).load();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return alertView;
+    }
+
 
     public AnchorPane getTemperatureView() {
         if (temperatureView == null) {

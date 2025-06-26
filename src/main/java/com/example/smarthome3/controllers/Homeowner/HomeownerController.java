@@ -62,6 +62,7 @@ public class HomeownerController implements Initializable {
                 case "Humidity" -> Model.getInstance().getViewFactory().getHumidityView();
                 case "Temperature" -> Model.getInstance().getViewFactory().getTemperatureView();
                 case "Motion" -> Model.getInstance().getViewFactory().getMotionView();
+                case "Alert" -> Model.getInstance().getViewFactory().getAlertView();
                 case "Light" -> {
                     try {
                         yield Model.getInstance().getViewFactory().getLightView();
