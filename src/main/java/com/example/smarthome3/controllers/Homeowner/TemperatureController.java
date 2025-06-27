@@ -1,7 +1,6 @@
 package com.example.smarthome3.controllers.Homeowner;
 
 import com.example.smarthome3.Database.DatabaseConnector;
-import com.example.smarthome3.Models.Model;
 import com.example.smarthome3.Database.UserSession;
 import com.example.smarthome3.Database.User;
 import javafx.fxml.FXML;
@@ -11,7 +10,6 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -26,12 +24,10 @@ public class TemperatureController implements Initializable {
     @FXML public Label dateTimeLabel;
     @FXML public NumberAxis yAxis1;
     @FXML public CategoryAxis xAxis1;
-    @FXML public LineChart<String, Number> TemperatureChart;
-    @FXML public Slider temperatureSlider;
-    @FXML public Text CurrentTemperatureId;
-    @FXML public Text HighestTempId;
-    @FXML public Text LowestTempId;
-    @FXML public Text AdjustTempId;
+    @FXML public LineChart<String, Number> temperatureChart;
+    @FXML public Text maxTemperatureText;
+    @FXML public Text minTemperatureText;
+    @FXML public Text currentTemperatureText;
 
     private Connection connection;
 
@@ -40,7 +36,7 @@ public class TemperatureController implements Initializable {
         try {
             connection = DatabaseConnector.getConnection();
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database", e);
+            throw new RuntimeException(e);
         }
 
         updateDateTime();
@@ -49,92 +45,63 @@ public class TemperatureController implements Initializable {
 
     private void updateDateTime() {
         LocalDateTime now = LocalDateTime.now();
-        String daySuffix = getDayOfMonthSuffix(now.getDayOfMonth());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a | EEEE, d 'of' MMMM, yyyy");
-        String formattedDate = now.format(formatter).replaceFirst(
-                "\\b" + now.getDayOfMonth() + "\\b",
-                now.getDayOfMonth() + daySuffix
-        );
-        dateTimeLabel.setText(formattedDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy - HH:mm");
+        dateTimeLabel.setText(now.format(formatter));
 
-        String username = Model.getInstance().getViewFactory().getLoggedInUser();
-        user_name.setText("Hi, " + username + " 👋");
+        User currentUser = UserSession.getInstance().getUser();
+        if (currentUser != null) {
+            user_name.setText("Hi, " + currentUser.getName() + " 👋");
+        }
     }
 
     private void loadTemperatureData() {
+        if (connection == null) return;
+
         User currentUser = UserSession.getInstance().getUser();
-        if (currentUser == null) {
-            System.err.println("No user is logged in.");
-            return;
-        }
+        if (currentUser == null) return;
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Temperature");
+        series.setName("Temperature (°C)");
 
         String query = """
-            SELECT s.temperature, s.recorded_at
+            SELECT s.recorded_at, s.temperature_celsius
             FROM Sensor s
             JOIN Home h ON s.HomeId = h.HomeId
             WHERE h.OwnerId = ?
             ORDER BY s.recorded_at
         """;
 
-        double highest = Double.MIN_VALUE;
-        double lowest = Double.MAX_VALUE;
-        double currentTemp = 0;
-        int count = 0;
-
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, currentUser.getID());
             ResultSet rs = stmt.executeQuery();
 
+            double max = Double.MIN_VALUE;
+            double min = Double.MAX_VALUE;
+            double last = 0;
+
             while (rs.next()) {
-                double temperature = rs.getDouble("temperature");
                 String timestamp = rs.getString("recorded_at");
+                double temp = rs.getDouble("temperature_celsius");
+                last = temp;
+                max = Math.max(max, temp);
+                min = Math.min(min, temp);
 
                 LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                 String formattedTime = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
-
-                if (count++ % 3 == 0) {
-                    series.getData().add(new XYChart.Data<>(formattedTime, temperature));
-                }
-
-                // Keep track of values
-                highest = Math.max(highest, temperature);
-                lowest = Math.min(lowest, temperature);
-                currentTemp = temperature; // last one will be considered current
+                series.getData().add(new XYChart.Data<>(formattedTime, temp));
             }
+
+            maxTemperatureText.setText(String.format("%.2f °C", max));
+            minTemperatureText.setText(String.format("%.2f °C", min));
+            currentTemperatureText.setText(String.format("%.2f °C", last));
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return;
         }
 
-        // Show chart
-        TemperatureChart.getData().clear();
-        TemperatureChart.getData().add(series);
+        temperatureChart.getData().clear();
+        temperatureChart.getData().add(series);
         xAxis1.setTickLabelRotation(45);
-
-        // Update UI stats
-        CurrentTemperatureId.setText((int) currentTemp + "°C");
-        HighestTempId.setText((int) highest + "°C");
-        LowestTempId.setText((int) lowest + "°C");
-        temperatureSlider.setValue(currentTemp);
-        AdjustTempId.setText((int) temperatureSlider.getValue() + "°C");
-
-        // Optional: update AdjustTempId on slider move
-        temperatureSlider.valueProperty().addListener((obs, oldVal, newVal) ->
-                AdjustTempId.setText(newVal.intValue() + "°C")
-        );
-    }
-
-    private String getDayOfMonthSuffix(int day) {
-        if (day >= 11 && day <= 13) return "th";
-        return switch (day % 10) {
-            case 1 -> "st";
-            case 2 -> "nd";
-            case 3 -> "rd";
-            default -> "th";
-        };
+        temperatureChart.layout();
     }
 }

@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 
 import java.net.URL;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -32,6 +33,8 @@ public class AlertController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println("✅ AlertController initialized");
+
         try {
             connection = DatabaseConnector.getConnection();
         } catch (SQLException e) {
@@ -43,19 +46,31 @@ public class AlertController implements Initializable {
     }
 
     private void updateDateTime() {
+        LocalDateTime now = LocalDateTime.now();
+        String daySuffix = getDayOfMonthSuffix(now.getDayOfMonth());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a | EEEE, d 'of' MMMM, yyyy");
-        String formattedDate = java.time.LocalDateTime.now().format(formatter);
+        String formattedDate = now.format(formatter).replaceFirst(
+                "\\b" + now.getDayOfMonth() + "\\b",
+                now.getDayOfMonth() + daySuffix
+        );
         dateTimeLabel.setText(formattedDate);
 
-        User user = UserSession.getInstance().getUser();
-        if (user != null) {
-            user_name.setText("Hi, " + user.getName() + " 👋");
+        User currentUser = UserSession.getInstance() != null ? UserSession.getInstance().getUser() : null;
+        if (currentUser != null) {
+            user_name.setText("Hi, " + currentUser.getName() + " 👋");
+        } else {
+            user_name.setText("Hi, Guest 👋");
         }
     }
 
     private void loadRecentAlerts() {
-        User user = UserSession.getInstance().getUser();
-        if (user == null || connection == null) return;
+        if (connection == null) return;
+
+        User currentUser = UserSession.getInstance() != null ? UserSession.getInstance().getUser() : null;
+        if (currentUser == null) {
+            System.err.println("⚠️ No user found in session.");
+            return;
+        }
 
         String query = """
             SELECT a.timestamp, a.message
@@ -69,22 +84,22 @@ public class AlertController implements Initializable {
         List<VBox> containers = List.of(Container1, Container2, Container3);
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, user.getID());
+            stmt.setInt(1, currentUser.getID());
             ResultSet rs = stmt.executeQuery();
 
             int index = 0;
             while (rs.next() && index < containers.size()) {
                 String timestamp = rs.getString("timestamp");
                 String message = rs.getString("message");
-                VBox alertBox = createAlertBox(timestamp, message);
 
+                VBox alertBox = createAlertBox(timestamp, message);
                 containers.get(index).getChildren().clear();
                 containers.get(index).getChildren().add(alertBox);
 
                 index++;
             }
 
-            // Vider les conteneurs restants s’il y a moins de 3 alertes
+            // Clear remaining containers if fewer than 3 alerts
             for (int i = index; i < containers.size(); i++) {
                 containers.get(i).getChildren().clear();
             }
@@ -110,5 +125,15 @@ public class AlertController implements Initializable {
 
         box.getChildren().addAll(dateLabel, msgText);
         return box;
+    }
+
+    private String getDayOfMonthSuffix(int day) {
+        if (day >= 11 && day <= 13) return "th";
+        return switch (day % 10) {
+            case 1 -> "st";
+            case 2 -> "nd";
+            case 3 -> "rd";
+            default -> "th";
+        };
     }
 }

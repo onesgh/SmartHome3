@@ -2,6 +2,7 @@ package com.example.smarthome3.Models;
 
 import com.example.smarthome3.Views.ViewFactory;
 import com.example.smarthome3.Views.AccountType;
+import javafx.stage.Stage;
 
 public class Model {
     private static Model model;
@@ -64,5 +65,8 @@ public class Model {
         // Save user logic here, you can add database save logic
 
         return true;
+    }
+
+    public void closeStage(Stage currentStage) {
     }
 }

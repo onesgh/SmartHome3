@@ -60,7 +60,7 @@
                 <Font name="System Bold" size="12.0" />
             </font>
         </Label>
-      <PasswordField />
+      <PasswordField fx:id="passwordField" />
 
         <!-- Confirm Password Field -->
         <Label text="Confirm Password" textFill="#745230">
@@ -68,7 +68,7 @@
                 <Font name="System Bold" size="12.0" />
             </font>
         </Label>
-      <PasswordField />
+      <PasswordField fx:id="confirmPasswordField" />
       <VBox prefHeight="20.0" prefWidth="350.0" />
 
                     <!-- Sign Up Button -->

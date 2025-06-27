@@ -1,6 +1,7 @@
 package com.example.smarthome3.controllers.Homeowner;
 
 import com.example.smarthome3.Models.Model;
+import com.example.smarthome3.Database.UserSession;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -36,65 +37,71 @@ public class HomeownerMenuController implements Initializable {
     }
 
     private void addListeners() {
-        // Add listener for logout button
         if (logout_btn != null) {
             logout_btn.setOnAction(event -> {
-                System.out.println("Logout button clicked");
-                logoutAndRedirectToLogin();
+                UserSession.clear();  // 🔴 Clear previous session
+
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Fxml/Login.fxml"));
+                    Stage stage = new Stage();
+                    stage.setScene(new Scene(loader.load()));
+                    stage.setTitle("Login");
+                    stage.show();
+
+                    ((Stage) logout_btn.getScene().getWindow()).close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
-        } else {
-            System.out.println("❌ logout_btn is not linked in FXML!");
+            dashboard_btn.setOnAction(event -> {
+                System.out.println("Dashboard button clicked");
+                Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Dashboard");
+            });
+
+            humidity_btn.setOnAction(event -> {
+                System.out.println("Humidity button clicked");
+                Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Humidity");
+            });
+
+            temperature_btn.setOnAction(event -> {
+                System.out.println("Temperature button clicked");
+                Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Temperature");
+            });
+
+            motion_btn.setOnAction(event -> {
+                System.out.println("Motion button clicked");
+                Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Motion");
+            });
+
+            light_btn.setOnAction(event -> {
+                System.out.println("Light button clicked");
+                Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Light");
+            });
+
+            Alert_btn.setOnAction(event -> {
+                System.out.println("Alert button clicked");
+                Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Alert");
+            });
         }
-
-        // Other button listeners (example)
-        dashboard_btn.setOnAction(event -> {
-            System.out.println("Dashboard button clicked");
-            Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Dashboard");
-        });
-        humidity_btn.setOnAction(event -> {
-            System.out.println("Humidity button clicked");
-            Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Humidity");
-        });
-
-        temperature_btn.setOnAction(event -> {
-            System.out.println("Temperature button clicked");
-            Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Temperature");
-        });
-
-        motion_btn.setOnAction(event -> {
-            System.out.println("Motion button clicked");
-            Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Motion");
-        });
-
-        light_btn.setOnAction(event -> {
-            System.out.println("Light button clicked");
-            Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Light");
-        });
-        Alert_btn.setOnAction(event -> {
-            System.out.println("Alert button clicked");
-            Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Alert");
-        });
-
-        // You can add other listeners similarly...
     }
 
     private void logoutAndRedirectToLogin() {
-        // You can perform any necessary logout actions here like clearing user data
-        // For example: Model.getInstance().clearUserSession();
+        // ✅ Clear session
+        UserSession.clear();
+        System.out.println("✅ User session cleared.");
 
         try {
-            // Load the login scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Fxml/Login.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Login Dashboard");
             stage.show();
 
-            // Close the current Homeowner window
+            // Close the current window
             Stage currentStage = (Stage) logout_btn.getScene().getWindow();
             currentStage.close();
 
-            System.out.println("Redirecting to login page...");
+            System.out.println("✅ Redirected to login page.");
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,7 +1,7 @@
 package com.example.smarthome3.controllers.Homeowner;
 
 import com.example.smarthome3.Database.DatabaseConnector;
-import com.example.smarthome3.Models.Model;
+
 import com.example.smarthome3.Database.User;
 import com.example.smarthome3.Database.UserSession;
 import javafx.fxml.FXML;
@@ -57,8 +57,10 @@ public class MotionController implements Initializable {
         );
         dateTimeLabel.setText(formattedDate);
 
-        String username = Model.getInstance().getViewFactory().getLoggedInUser();
-        user_name.setText("Hi, " + username + " 👋");
+        User currentUser = UserSession.getInstance().getUser();
+        if (currentUser != null) {
+            user_name.setText("Hi, " + currentUser.getName() + " 👋");
+        }
     }
 
     private void loadMotionData() {
@@ -77,14 +79,6 @@ public class MotionController implements Initializable {
             JOIN Home h ON s.HomeId = h.HomeId
             WHERE s.motion IS NOT NULL AND h.OwnerId = ?
             ORDER BY s.recorded_at
-        """;
-
-        String sensorStatusQuery = """
-            SELECT s.is_active
-            FROM Sensor s
-            JOIN Home h ON s.HomeId = h.HomeId
-            WHERE h.OwnerId = ?
-            LIMIT 1
         """;
 
         int totalMotions = 0;
@@ -129,16 +123,9 @@ public class MotionController implements Initializable {
         AlertsTId.setText(String.valueOf(todayAlerts));
         lastMotionDetectedId.setText(lastMotion);
 
-        // Update checkbox (is_active)
-        try (PreparedStatement ps = connection.prepareStatement(sensorStatusQuery)) {
-            ps.setInt(1, user.getID());
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                enableMotionSensors.setSelected(rs.getBoolean("is_active"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        // Optionally disable the checkbox since it's not backed by data anymore
+        enableMotionSensors.setDisable(true);
+        enableMotionSensors.setSelected(false);
     }
 
     private String getDayOfMonthSuffix(int day) {

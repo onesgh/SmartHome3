@@ -64,8 +64,10 @@ public class HumidityController implements Initializable {
             return;
         }
 
-        User user = UserSession.getInstance().getUser();
-        user_name.setText("Hi, " + user.getName() + " 👋");
+        User currentUser = UserSession.getInstance().getUser();
+        if (currentUser != null) {
+            user_name.setText("Hi, " + currentUser.getName() + " 👋");
+        }
     }
 
     private void loadHumidityStats() {
@@ -96,7 +98,10 @@ public class HumidityController implements Initializable {
     }
 
     private void loadHumidityData() {
-        if (UserSession.getInstance() == null) return;
+        if (connection == null) return;
+
+        User currentUser = UserSession.getInstance().getUser();
+        if (currentUser == null) return;
 
         User user = UserSession.getInstance().getUser();
         XYChart.Series<String, Number> series = new XYChart.Series<>();

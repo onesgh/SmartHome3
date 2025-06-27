@@ -25,13 +25,10 @@ public class LoginController implements Initializable {
     public Label DontHaveAccount;
 
     @FXML
-    private TextField user_address_lbl; // Username field
+    private TextField user_address_lbl;
 
     @FXML
     private Button login_btn;
-
-    @FXML
-    private Button Signin_btn;
 
     @FXML
     private TextField password_fld;
@@ -43,44 +40,36 @@ public class LoginController implements Initializable {
         DatabaseConnector dbConnector = new DatabaseConnector();
         userDAO = new UserDAO(dbConnector);
 
-        // Set the login button action
         login_btn.setOnAction(event -> onLogin());
-
-        // Sign up button opens sign-up window
         DontHaveAccount.setOnMouseClicked(event -> openSignUpWindow());
-
-        // Optional: style the label like a link
         DontHaveAccount.setStyle("-fx-text-fill: blue; -fx-underline: true; -fx-cursor: hand;");
     }
 
     private void onLogin() {
         String username = user_address_lbl.getText().trim();
-        String passwordHash = password_fld.getText();
+        String password = password_fld.getText().trim();
 
-        if (username.isEmpty() || passwordHash.isEmpty()) {
+        if (username.isEmpty() || password.isEmpty()) {
             showAlert(AlertType.ERROR, "Login Error", "Username or password field is empty.");
             return;
         }
 
         try {
-            // Fetch user by username
             ResultSet result = userDAO.getUserByUsername(username);
             if (result != null && result.next()) {
-                String storedPasswordHash = result.getString("passwordHash");
-                String roleFromDB = result.getString("accountType").toUpperCase();
+                String storedPassword = result.getString("passwordHash"); // plain text now
 
-                // Password check
-                if (storedPasswordHash.equals(passwordHash)) {
-                    int userId = result.getInt("UserId"); // 🔑 Make sure this column exists in your table
-                    // ✅ Initialize the UserSession globally for future access
+                if (storedPassword.equals(password)) {
+                    int userId = result.getInt("UserId");
                     User user = new User(userId, username);
-                    UserSession.init(user);
+                    UserSession.getInstance(user);
 
-                    // Continue with Model-based navigation
                     Model.getInstance().getViewFactory().setLoggedInUser(username);
                     Model.getInstance().setUsername(username);
-                    Model.getInstance()
-                            .setUserRole(Enum.valueOf(com.example.smarthome3.Views.AccountType.class, roleFromDB));
+                    String roleFromDB = result.getString("accountType").toUpperCase();
+                    Model.getInstance().setUserRole(
+                            Enum.valueOf(com.example.smarthome3.Views.AccountType.class, roleFromDB)
+                    );
 
                     System.out.println("✅ Login successful as " + roleFromDB);
                     openDashboard(roleFromDB);
@@ -91,7 +80,7 @@ public class LoginController implements Initializable {
                 showAlert(AlertType.ERROR, "Login Error", "User not found.");
             }
         } catch (SQLException e) {
-            showAlert(AlertType.ERROR, "Database Error", "Error occurred while accessing the database.");
+            showAlert(AlertType.ERROR, "Database Error", "Error accessing database: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -111,7 +100,6 @@ public class LoginController implements Initializable {
                 Model.getInstance().getViewFactory().showSecurityGuardWindow();
                 break;
             default:
-                System.out.println("❌ Unknown account type.");
                 showAlert(AlertType.ERROR, "Unknown Account", "Unknown account type. Please contact support.");
         }
     }
@@ -122,7 +110,6 @@ public class LoginController implements Initializable {
         Model.getInstance().getViewFactory().showSignUpWindow();
     }
 
-    // Alert utility
     private void showAlert(AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

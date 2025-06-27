@@ -10,13 +10,12 @@
       <VBox prefHeight="80.0" prefWidth="160.0" styleClass="title_container" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <AnchorPane prefHeight="0.0" prefWidth="151.0" />
          <AnchorPane prefHeight="40.0" prefWidth="160.0">
-            <children>
-               <FontAwesomeIconView fill="#745230" glyphName="HOME" layoutX="14.0" layoutY="77.0" size="3em" text="" textAlignment="CENTER" wrappingWidth="107.498046875">
-                  <font>
-                     <Font size="30.0" />
-                  </font>
-               </FontAwesomeIconView>
-            </children>
+            <FontAwesomeIconView fill="#745230" glyphName="HOME" layoutX="14.0" layoutY="77.0" size="3em" text=""
+                                 textAlignment="CENTER" wrappingWidth="107.498046875">
+               <font>
+                  <Font size="30.0"/>
+               </font>
+            </FontAwesomeIconView>
          </AnchorPane>
          <Text fill="#745230" strokeType="OUTSIDE" strokeWidth="0.0">
             <font>
