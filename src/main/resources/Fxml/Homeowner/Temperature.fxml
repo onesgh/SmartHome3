@@ -35,6 +35,10 @@
                 <NumberAxis fx:id="yAxis1" label="Temperature (°C)" />
             </yAxis>
         </LineChart>
+        <ListView fx:id="Temperature_listview"
+                  prefHeight="80.0"
+                  prefWidth="664.0"
+                  style="-fx-background-color: transparent; -fx-font-size: 14px;" />
     </VBox>
     <AnchorPane layoutY="-1.0" prefHeight="59.0" prefWidth="833.0" style="-fx-background-color: #ffffffcc; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
         <Label layoutX="20.0" layoutY="15.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #555;" text="Smart Home " />

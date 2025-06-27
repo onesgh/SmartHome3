@@ -10,10 +10,9 @@
       <VBox prefHeight="80.0" prefWidth="160.0" styleClass="title_container" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <AnchorPane prefHeight="0.0" prefWidth="151.0" />
          <AnchorPane prefHeight="40.0" prefWidth="160.0">
-            <FontAwesomeIconView fill="#745230" glyphName="HOME" layoutX="14.0" layoutY="77.0" size="3em" text=""
-                                 textAlignment="CENTER" wrappingWidth="107.498046875">
+            <FontAwesomeIconView fill="#745230" glyphName="HOME" layoutX="14.0" layoutY="77.0" size="3em" text="" textAlignment="CENTER" wrappingWidth="107.498046875">
                <font>
-                  <Font size="30.0"/>
+                  <Font size="30.0" />
                </font>
             </FontAwesomeIconView>
          </AnchorPane>
@@ -34,7 +33,7 @@
          <Button fx:id="temperature_btn" mnemonicParsing="false" text="   🌡Temperature" />
          <Button fx:id="humidity_btn" mnemonicParsing="false" text="      📡Humidity" />
 
-         <Button fx:id="Alert_btn" mnemonicParsing="false" text="notification" textAlignment="CENTER">
+         <Button fx:id="Alert_btn" mnemonicParsing="false" text="Profile" textAlignment="CENTER">
             <graphic>
                <FontAwesomeIconView glyphName="USER" text="" wrappingWidth="17.999996185302734" />
             </graphic>

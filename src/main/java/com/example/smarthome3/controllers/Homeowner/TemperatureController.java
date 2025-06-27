@@ -10,6 +10,8 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -19,15 +21,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class TemperatureController implements Initializable {
-
+    @FXML public ListView<String> Temperature_listview;
     @FXML public Text user_name;
     @FXML public Label dateTimeLabel;
     @FXML public NumberAxis yAxis1;
     @FXML public CategoryAxis xAxis1;
-    @FXML public LineChart<String, Number> temperatureChart;
-    @FXML public Text maxTemperatureText;
-    @FXML public Text minTemperatureText;
-    @FXML public Text currentTemperatureText;
+    @FXML public LineChart<String, Number> TemperatureChart;
+    @FXML public Text HighestTempId;
+    @FXML public Text LowestTempId;
+    @FXML public Text CurrentTemperatureId;
+    @FXML public Text AdjustTempId;
+    @FXML public Slider temperatureSlider;
 
     private Connection connection;
 
@@ -41,6 +45,9 @@ public class TemperatureController implements Initializable {
 
         updateDateTime();
         loadTemperatureData();
+        temperatureSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            AdjustTempId.setText(String.format("%.0f°C", newVal.doubleValue()));
+        });
     }
 
     private void updateDateTime() {
@@ -64,7 +71,7 @@ public class TemperatureController implements Initializable {
         series.setName("Temperature (°C)");
 
         String query = """
-            SELECT s.recorded_at, s.temperature_celsius
+            SELECT s.recorded_at, s.temperature
             FROM Sensor s
             JOIN Home h ON s.HomeId = h.HomeId
             WHERE h.OwnerId = ?
@@ -74,14 +81,14 @@ public class TemperatureController implements Initializable {
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, currentUser.getID());
             ResultSet rs = stmt.executeQuery();
-
+            Temperature_listview.getItems().clear();
             double max = Double.MIN_VALUE;
             double min = Double.MAX_VALUE;
             double last = 0;
 
             while (rs.next()) {
                 String timestamp = rs.getString("recorded_at");
-                double temp = rs.getDouble("temperature_celsius");
+                double temp = rs.getDouble("temperature");
                 last = temp;
                 max = Math.max(max, temp);
                 min = Math.min(min, temp);
@@ -91,17 +98,18 @@ public class TemperatureController implements Initializable {
                 series.getData().add(new XYChart.Data<>(formattedTime, temp));
             }
 
-            maxTemperatureText.setText(String.format("%.2f °C", max));
-            minTemperatureText.setText(String.format("%.2f °C", min));
-            currentTemperatureText.setText(String.format("%.2f °C", last));
+            HighestTempId.setText(String.format("%.0f °C", max));
+            LowestTempId.setText(String.format("%.0f °C", min));
+            CurrentTemperatureId.setText(String.format("%.0f °C", last));
+            AdjustTempId.setText(String.format("%.0f °C", last));
+
+            TemperatureChart.getData().clear();
+            TemperatureChart.getData().add(series);
+            xAxis1.setTickLabelRotation(45);
+            TemperatureChart.layout();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        temperatureChart.getData().clear();
-        temperatureChart.getData().add(series);
-        xAxis1.setTickLabelRotation(45);
-        temperatureChart.layout();
     }
 }

@@ -74,12 +74,12 @@ public class MotionController implements Initializable {
         series.setName("Motion");
 
         String motionQuery = """
-            SELECT s.recorded_at, s.motion
-            FROM Sensor s
-            JOIN Home h ON s.HomeId = h.HomeId
-            WHERE s.motion IS NOT NULL AND h.OwnerId = ?
-            ORDER BY s.recorded_at
-        """;
+        SELECT s.recorded_at, s.motion
+        FROM Sensor s
+        JOIN Home h ON s.HomeId = h.HomeId
+        WHERE s.motion IS NOT NULL AND h.OwnerId = ?
+        ORDER BY s.recorded_at
+    """;
 
         int totalMotions = 0;
         int todayAlerts = 0;
@@ -89,7 +89,6 @@ public class MotionController implements Initializable {
             stmt.setInt(1, user.getID());
             ResultSet rs = stmt.executeQuery();
 
-            int count = 0;
             while (rs.next()) {
                 String timestamp = rs.getString("recorded_at");
                 int motion = rs.getInt("motion");
@@ -103,11 +102,10 @@ public class MotionController implements Initializable {
                     lastMotion = timestamp;
                 }
 
-                if (count++ % 3 == 0) {
-                    LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                    String formattedTime = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
-                    series.getData().add(new XYChart.Data<>(formattedTime, motion));
-                }
+                // ✅ Add all points (no skipping)
+                LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                String formattedTime = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
+                series.getData().add(new XYChart.Data<>(formattedTime, motion));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -117,13 +115,14 @@ public class MotionController implements Initializable {
         motionChart.getData().clear();
         motionChart.getData().add(series);
         MotionXAxis.setTickLabelRotation(45);
+        motionChart.layout();
 
         // Update labels
         ActiveSensorId.setText(String.valueOf(totalMotions));
         AlertsTId.setText(String.valueOf(todayAlerts));
         lastMotionDetectedId.setText(lastMotion);
 
-        // Optionally disable the checkbox since it's not backed by data anymore
+        // Optionally disable the checkbox
         enableMotionSensors.setDisable(true);
         enableMotionSensors.setSelected(false);
     }

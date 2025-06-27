@@ -103,34 +103,32 @@ public class HumidityController implements Initializable {
         User currentUser = UserSession.getInstance().getUser();
         if (currentUser == null) return;
 
-        User user = UserSession.getInstance().getUser();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Humidity");
         humidity_listview.getItems().clear();
 
         String query = """
-            SELECT s.recorded_at, s.humidity
-            FROM Sensor s
-            JOIN Home h ON s.HomeId = h.HomeId
-            WHERE h.OwnerId = ?
-            ORDER BY s.recorded_at
-        """;
+        SELECT s.recorded_at, s.humidity
+        FROM Sensor s
+        JOIN Home h ON s.HomeId = h.HomeId
+        WHERE h.OwnerId = ?
+        ORDER BY s.recorded_at
+    """;
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, user.getID());
+            stmt.setInt(1, currentUser.getID());
+
             try (ResultSet rs = stmt.executeQuery()) {
-                int count = 0;
                 while (rs.next()) {
                     String timestamp = rs.getString("recorded_at");
-                    LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                    String formatted = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
                     double humidity = rs.getDouble("humidity");
 
-                    if (count++ % 3 == 0) {
-                        series.getData().add(new XYChart.Data<>(formatted, humidity));
-                    }
+                    LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    String formatted = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
 
-                    humidity_listview.getItems().add(String.format("%s: %.1f%%", formatted, humidity));
+                    // ✅ Add each point to chart and list
+                    series.getData().add(new XYChart.Data<>(formatted, humidity));
+                    humidity_listview.getItems().add(String.format("%s: %.0f%%", formatted, humidity));
                 }
             }
         } catch (SQLException e) {
@@ -140,7 +138,9 @@ public class HumidityController implements Initializable {
         humidityChart.getData().clear();
         humidityChart.getData().add(series);
         xAxis.setTickLabelRotation(45);
+        humidityChart.layout();
     }
+
 
     private String getDayOfMonthSuffix(int day) {
         if (day >= 11 && day <= 13) return "th";

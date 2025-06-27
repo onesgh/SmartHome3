@@ -38,30 +38,5 @@ public class UserDAO {
         }
     }
 
-    // Update user password
-    public boolean updateUserPassword(String username, String newPasswordHash) {
-        String sql = "UPDATE User SET passwordHash = ? WHERE username = ?";
-        try (Connection conn = databaseConnector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, newPasswordHash);
-            stmt.setString(2, username);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
-    // Delete user by username
-    public boolean deleteUser(String username) {
-        String sql = "DELETE FROM User WHERE username = ?";
-        try (Connection conn = databaseConnector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, username);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 }

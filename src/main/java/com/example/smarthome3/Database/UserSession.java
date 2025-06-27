@@ -31,7 +31,11 @@ public class UserSession {
         this.user = user;
     }
 
-    public static void clear() {
-        instance = null;
+    // ✅ Properly clear the current session
+    public static void clearUser() {
+        if (instance != null) {
+            instance.user = null;
+            instance = null;
+        }
     }
 }

@@ -12,6 +12,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -31,6 +32,9 @@ public class LightController implements Initializable {
     @FXML public Text maxLightId;
     @FXML public Text minLightId;
     @FXML public Text currentLightId;
+    @FXML public Slider brightnessSlider;
+    @FXML public Text BrightnessId;
+    @FXML public Text AutoStatusId;
 
     private Connection connection;
 
@@ -46,6 +50,7 @@ public class LightController implements Initializable {
 
         updateDateTime();
         loadLightData();
+        setupSliderListener();
     }
 
     private void updateDateTime() {
@@ -96,13 +101,12 @@ public class LightController implements Initializable {
             ResultSet rs = stmt.executeQuery();
 
             light_listview.getItems().clear();
-            int count = 0;
             double max = Double.MIN_VALUE;
             double min = Double.MAX_VALUE;
             double last = 0;
 
             while (rs.next()) {
-                if (count++ % 3 != 0) continue;
+
 
                 String timestamp = rs.getString("recorded_at");
                 LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -115,12 +119,12 @@ public class LightController implements Initializable {
                 min = Math.min(min, lux);
 
                 series.getData().add(new XYChart.Data<>(formattedTime, lux));
-                light_listview.getItems().add(formattedTime + ": " + String.format("%.2f", lux) + " lx");
+                light_listview.getItems().add(formattedTime + ": " + Math.round(lux) + " lx");
             }
 
-            maxLightId.setText(String.format("%.2f lx", max));
-            minLightId.setText(String.format("%.2f lx", min));
-            currentLightId.setText(String.format("%.2f lx", last));
+            maxLightId.setText(Math.round(max) + " lx");
+            minLightId.setText(Math.round(min) + " lx");
+            currentLightId.setText(Math.round(last) + " lx");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -130,5 +134,13 @@ public class LightController implements Initializable {
         lightChart.getData().add(series);
         lightXAxis.setTickLabelRotation(45);
         lightChart.layout();
+    }
+
+    private void setupSliderListener() {
+        if (brightnessSlider != null && BrightnessId != null) {
+            brightnessSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+                BrightnessId.setText(Math.round(newVal.doubleValue()) + " %");
+            });
+        }
     }
 }

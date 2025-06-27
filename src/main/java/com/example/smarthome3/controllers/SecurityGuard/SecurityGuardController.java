@@ -1,13 +1,19 @@
 package com.example.smarthome3.controllers.SecurityGuard;
 
+import com.example.smarthome3.Database.DatabaseConnector;
+import com.example.smarthome3.Database.User;
+import com.example.smarthome3.Database.UserSession;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.net.URL;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class SecurityGuardController implements Initializable {
@@ -23,135 +29,139 @@ public class SecurityGuardController implements Initializable {
     @FXML private Button refresh_btn;
     @FXML private Button logout_btn2;
 
+    private Connection connection;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("✅ Security Guard Dashboard Initialized");
-
-        // Check if UI elements are correctly linked
-        if (activity_log_listview == null) System.out.println("❌ Error: ListView not found!");
-        if (checkin_btn == null) System.out.println("❌ Error: Check-In Button not found!");
-        if (checkout_btn == null) System.out.println("❌ Error: Check-Out Button not found!");
-        if (report_incident_btn == null) System.out.println("❌ Error: Report Button not found!");
-
-        // Example: Load activity log (Replace this with real data retrieval)
-        activity_log_listview.getItems().addAll(
-                "Visitor John checked in at 10:30 AM",
-                "Incident reported near Gate A",
-                "Visitor Alice checked out at 12:45 PM"
-        );
-
-        // Handle Check-In button
-        checkin_btn.setOnAction(event -> checkInVisitor());
-
-        // Handle Check-Out button
-        checkout_btn.setOnAction(event -> checkOutVisitor());
-
-        // Handle Incident Report button
-        report_incident_btn.setOnAction(event -> reportIncident());
-
-        // Handle Refresh button
-        refresh_btn.setOnAction(event -> refreshActivityLog());
-
-        // Handle Emergency Alert button
-        emergency_alert_btn.setOnAction(event -> triggerEmergencyAlert());
-
-        // Handle Logout button
-        if (logout_btn2 != null) {
-            logout_btn2.setOnAction(event -> logoutAndRedirectToLogin());
-        } else {
-            System.out.println("❌ Logout button is not linked!");
+        try {
+            connection = DatabaseConnector.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException("Database connection failed", e);
         }
-    }
 
-    // Check-In Method
-    private void checkInVisitor() {
-        String visitorName = visitor_name_field.getText();
-        String visitPurpose = visitor_purpose_field.getText();
-
-        if (visitorName.isEmpty() || visitPurpose.isEmpty()) {
-            showAlert("Error", "Please enter visitor name and purpose.");
+        User currentUser = UserSession.getInstance().getUser();
+        if (currentUser == null) {
+            showAlert("Error", "No user session found.");
             return;
         }
 
-        String entry = "Visitor " + visitorName + " checked in. Purpose: " + visitPurpose;
-        activity_log_listview.getItems().add(entry);
-        System.out.println("✅ " + entry);
+        refreshActivityLog(currentUser.getID());
 
+        checkin_btn.setOnAction(event -> checkInVisitor(currentUser.getID()));
+        checkout_btn.setOnAction(event -> checkOutVisitor(currentUser.getID()));
+        report_incident_btn.setOnAction(event -> reportIncident(currentUser.getID()));
+        emergency_alert_btn.setOnAction(event -> triggerEmergencyAlert(currentUser.getID()));
+        refresh_btn.setOnAction(event -> refreshActivityLog(currentUser.getID()));
+        logout_btn2.setOnAction(event -> logoutAndRedirectToLogin());
+    }
+
+    private void refreshActivityLog(int userId) {
+        activity_log_listview.getItems().clear();
+
+        String query = """
+           SELECT Timestamp, Action
+                             FROM Log
+                             WHERE UserId = ?
+                             ORDER BY Timestamp DESC
+                             
+        """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Timestamp time = rs.getTimestamp("Timestamp");
+                String action = rs.getString("Action");
+                activity_log_listview.getItems().add(time + " - " + action);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkInVisitor(int userId) {
+        String name = visitor_name_field.getText();
+        String purpose = visitor_purpose_field.getText();
+        if (name.isEmpty() || purpose.isEmpty()) {
+            showAlert("Input Error", "Enter visitor name and purpose.");
+            return;
+        }
+        insertLog(userId, "Visitor " + name + " checked in. Purpose: " + purpose);
         visitor_name_field.clear();
         visitor_purpose_field.clear();
+        refreshActivityLog(userId);
     }
 
-    // Check-Out Method
-    private void checkOutVisitor() {
-        String visitorName = visitor_name_field.getText();
-
-        if (visitorName.isEmpty()) {
-            showAlert("Error", "Please enter visitor name.");
+    private void checkOutVisitor(int userId) {
+        String name = visitor_name_field.getText();
+        if (name.isEmpty()) {
+            showAlert("Input Error", "Enter visitor name.");
             return;
         }
-
-        String entry = "Visitor " + visitorName + " checked out.";
-        activity_log_listview.getItems().add(entry);
-        System.out.println("✅ " + entry);
-
+        insertLog(userId, "Visitor " + name + " checked out.");
         visitor_name_field.clear();
+        refreshActivityLog(userId);
     }
 
-    // Report Incident Method
-    private void reportIncident() {
+    private void reportIncident(int userId) {
         String incident = incident_report_area.getText();
-
         if (incident.isEmpty()) {
-            showAlert("Error", "Please describe the incident.");
+            showAlert("Input Error", "Describe the incident.");
             return;
         }
-
-        activity_log_listview.getItems().add("🚨 Incident Reported: " + incident);
-        System.out.println("🚨 " + incident);
-
+        insertLog(userId, "Incident reported: " + incident);
         incident_report_area.clear();
+        refreshActivityLog(userId);
     }
 
-    // Refresh Log Method
-    private void refreshActivityLog() {
-        System.out.println("🔄 Activity log refreshed.");
-        activity_log_listview.refresh();
+    private void triggerEmergencyAlert(int userId) {
+        insertLog(userId, "EMERGENCY ALERT triggered by guard!");
+        refreshActivityLog(userId);
+        showAlert("Emergency", "Emergency alert triggered!");
     }
 
-    // Emergency Alert Method
-    private void triggerEmergencyAlert() {
-        showAlert("Emergency Alert", "🚨 Emergency Alert Triggered! Security is responding.");
-        System.out.println("🚨 Emergency Alert Triggered!");
+    private void insertLog(int userId, String action) {
+        String getHomeQuery = "SELECT HomeId FROM Home WHERE SecurityGuardId = ?";
+        String insertQuery = "INSERT INTO Log (Timestamp, Action, UserId, HomeId) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement homeStmt = connection.prepareStatement(getHomeQuery)) {
+            homeStmt.setInt(1, userId);
+            ResultSet rs = homeStmt.executeQuery();
+            if (rs.next()) {
+                int homeId = rs.getInt("HomeId");
+                try (PreparedStatement insertStmt = connection.prepareStatement(insertQuery)) {
+                    insertStmt.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+                    insertStmt.setString(2, action);
+                    insertStmt.setInt(3, userId);
+                    insertStmt.setInt(4, homeId);
+                    insertStmt.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    // Utility Method: Show Alert
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    // Logout and Redirect to Login Page
     private void logoutAndRedirectToLogin() {
         try {
-            // Load the login scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Fxml/Login.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Login Dashboard");
+            stage.setTitle("Login");
             stage.show();
 
-            // Close the current Security Guard window
             Stage currentStage = (Stage) logout_btn2.getScene().getWindow();
             currentStage.close();
-
-            System.out.println("Redirecting to login page...");
-
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("❌ Error loading Login page.");
         }
+    }
+
+    private void showAlert(String title, String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }
