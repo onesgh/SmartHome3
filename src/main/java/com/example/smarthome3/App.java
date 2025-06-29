@@ -6,7 +6,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 
 import javafx.fxml.FXMLLoader;
-import javafx.stage.Stage;
+import javafx.stage.Stage;          
 
 public class App extends Application {
 

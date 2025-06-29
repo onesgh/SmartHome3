@@ -62,56 +62,74 @@ public class TemperatureController implements Initializable {
             user_name.setText("Hi, Guest 👋"); // Fallback if no user is logged in
         }
     }
-
     private void loadTemperatureData() {
         if (connection == null) return;
 
-        User currentUser = UserSession.getInstance().getCurrentUser(); // Changed from getUser()
+        User currentUser = UserSession.getInstance().getCurrentUser();
         if (currentUser == null) return;
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Temperature (°C)");
 
         String query = """
-            SELECT s.recorded_at, s.temperature
-            FROM Sensor s
-            JOIN Home h ON s.HomeId = h.HomeId
-            WHERE h.OwnerId = ?
-            ORDER BY s.recorded_at
-        """;
+        SELECT s.recorded_at, s.temperature
+        FROM Sensor s
+        JOIN Home h ON s.HomeId = h.HomeId
+        WHERE h.OwnerId = ? AND s.temperature IS NOT NULL
+        ORDER BY s.recorded_at
+    """;
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                query,
+                ResultSet.TYPE_FORWARD_ONLY,
+                ResultSet.CONCUR_READ_ONLY)) {
             stmt.setInt(1, currentUser.getID());
-            ResultSet rs = stmt.executeQuery();
-            Temperature_listview.getItems().clear();
-            double max = Double.MIN_VALUE;
-            double min = Double.MAX_VALUE;
-            double last = 0;
+            stmt.setFetchSize(100); // Récupérer 100 lignes à la fois pour limiter la mémoire
 
-            while (rs.next()) {
-                String timestamp = rs.getString("recorded_at");
-                double temp = rs.getDouble("temperature");
-                last = temp;
-                max = Math.max(max, temp);
-                min = Math.min(min, temp);
+            try (ResultSet rs = stmt.executeQuery()) {
+                Temperature_listview.getItems().clear();
+                double max = Double.MIN_VALUE;
+                double min = Double.MAX_VALUE;
+                double last = 0;
+                boolean hasData = false;
 
-                LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                String formattedTime = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
-                series.getData().add(new XYChart.Data<>(formattedTime, temp));
+                while (rs.next()) {
+                    hasData = true;
+                    String timestamp = rs.getString("recorded_at");
+                    double temp = rs.getDouble("temperature");
+                    last = temp;
+                    max = Math.max(max, temp);
+                    min = Math.min(min, temp);
+
+                    LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    String formattedTime = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
+                    series.getData().add(new XYChart.Data<>(formattedTime, temp));
+                    Temperature_listview.getItems().add(String.format("%s: %.0f°C", formattedTime, temp));
+                }
+
+                // Gestion des cas où aucune donnée n'est retournée
+                if (!hasData) {
+                    HighestTempId.setText("N/A");
+                    LowestTempId.setText("N/A");
+                    CurrentTemperatureId.setText("N/A");
+                    AdjustTempId.setText("N/A");
+                } else {
+                    HighestTempId.setText(String.format("%.0f °C", max));
+                    LowestTempId.setText(String.format("%.0f °C", min));
+                    CurrentTemperatureId.setText(String.format("%.0f °C", last));
+                    AdjustTempId.setText(String.format("%.0f °C", last));
+                }
+
+                TemperatureChart.getData().clear();
+                TemperatureChart.getData().add(series);
+                xAxis1.setTickLabelRotation(45);
+                TemperatureChart.layout();
+
             }
-
-            HighestTempId.setText(String.format("%.0f °C", max));
-            LowestTempId.setText(String.format("%.0f °C", min));
-            CurrentTemperatureId.setText(String.format("%.0f °C", last));
-            AdjustTempId.setText(String.format("%.0f °C", last));
-
-            TemperatureChart.getData().clear();
-            TemperatureChart.getData().add(series);
-            xAxis1.setTickLabelRotation(45);
-            TemperatureChart.layout();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+
 }

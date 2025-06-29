@@ -9,6 +9,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
@@ -66,20 +67,24 @@ public class HumidityController implements Initializable {
             System.err.println("❗ UserSession.getCurrentUser() returned null.");
         }
     }
-
     private void loadHumidityStats() {
-        User currentUser = UserSession.getInstance().getCurrentUser(); // Changed from getUser()
+        User currentUser = UserSession.getInstance().getCurrentUser();
         if (currentUser == null) return;
 
         String query = """
-            SELECT AVG(s.humidity) AS avg_humidity, MAX(s.humidity) AS max_humidity
-            FROM Sensor s
-            JOIN Home h ON s.HomeId = h.HomeId
-            WHERE h.OwnerId = ? AND s.humidity IS NOT NULL
-        """;
+        SELECT AVG(s.humidity) AS avg_humidity, MAX(s.humidity) AS max_humidity
+        FROM Sensor s
+        JOIN Home h ON s.HomeId = h.HomeId
+        WHERE h.OwnerId = ? AND s.humidity IS NOT NULL
+    """;
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                query,
+                ResultSet.TYPE_FORWARD_ONLY,
+                ResultSet.CONCUR_READ_ONLY)) {
             stmt.setInt(1, currentUser.getID());
+            stmt.setFetchSize(100);
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     avgHumidityText.setText(String.format("%.1f%%", rs.getDouble("avg_humidity")));
@@ -91,13 +96,14 @@ public class HumidityController implements Initializable {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Database Error", "Failed to load humidity stats: " + e.getMessage());
         }
     }
 
     private void loadHumidityData() {
         if (connection == null) return;
 
-        User currentUser = UserSession.getInstance().getCurrentUser(); // Changed from getUser()
+        User currentUser = UserSession.getInstance().getCurrentUser();
         if (currentUser == null) return;
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -105,15 +111,19 @@ public class HumidityController implements Initializable {
         humidity_listview.getItems().clear();
 
         String query = """
-            SELECT s.recorded_at, s.humidity
-            FROM Sensor s
-            JOIN Home h ON s.HomeId = h.HomeId
-            WHERE h.OwnerId = ?
-            ORDER BY s.recorded_at
-        """;
+        SELECT s.recorded_at, s.humidity
+        FROM Sensor s
+        JOIN Home h ON s.HomeId = h.HomeId
+        WHERE h.OwnerId = ? AND s.humidity IS NOT NULL
+        ORDER BY s.recorded_at
+    """;
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                query,
+                ResultSet.TYPE_FORWARD_ONLY,
+                ResultSet.CONCUR_READ_ONLY)) {
             stmt.setInt(1, currentUser.getID());
+            stmt.setFetchSize(100);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -123,13 +133,13 @@ public class HumidityController implements Initializable {
                     LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                     String formatted = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
 
-                    // Add each point to chart and list
                     series.getData().add(new XYChart.Data<>(formatted, humidity));
                     humidity_listview.getItems().add(String.format("%s: %.0f%%", formatted, humidity));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Database Error", "Failed to load humidity data: " + e.getMessage());
         }
 
         humidityChart.getData().clear();
@@ -138,6 +148,13 @@ public class HumidityController implements Initializable {
         humidityChart.layout();
     }
 
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
     private String getDayOfMonthSuffix(int day) {
         if (day >= 11 && day <= 13) return "th";
         return switch (day % 10) {

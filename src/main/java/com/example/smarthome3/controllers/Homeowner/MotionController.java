@@ -10,6 +10,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
@@ -62,7 +63,6 @@ public class MotionController implements Initializable {
             user_name.setText("Hi, " + currentUser.getName() + " 👋");
         }
     }
-
     private void loadMotionData() {
         if (connection == null) return;
 
@@ -76,7 +76,8 @@ public class MotionController implements Initializable {
         SELECT s.recorded_at, s.motion
         FROM Sensor s
         JOIN Home h ON s.HomeId = h.HomeId
-        WHERE s.motion IS NOT NULL AND h.OwnerId = ?
+        JOIN User u ON h.OwnerId = u.UserId
+        WHERE u.UserId = ? AND s.motion IS NOT NULL
         ORDER BY s.recorded_at
     """;
 
@@ -84,48 +85,57 @@ public class MotionController implements Initializable {
         int todayAlerts = 0;
         String lastMotion = "N/A";
 
-        try (PreparedStatement stmt = connection.prepareStatement(motionQuery)) {
+        try (PreparedStatement stmt = connection.prepareStatement(
+                motionQuery,
+                ResultSet.TYPE_FORWARD_ONLY,
+                ResultSet.CONCUR_READ_ONLY)) {
             stmt.setInt(1, currentUser.getID());
-            ResultSet rs = stmt.executeQuery();
+            stmt.setFetchSize(100);
 
-            while (rs.next()) {
-                String timestamp = rs.getString("recorded_at");
-                int motion = rs.getInt("motion");
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String timestamp = rs.getString("recorded_at");
+                    int motion = rs.getInt("motion");
 
-                if (motion > 0) {
-                    totalMotions++;
-                    LocalDate motionDate = LocalDate.parse(timestamp.substring(0, 10));
-                    if (motionDate.equals(LocalDate.now())) {
-                        todayAlerts++;
+                    if (motion > 0) {
+                        totalMotions++;
+                        LocalDate motionDate = LocalDate.parse(timestamp.substring(0, 10));
+                        if (motionDate.equals(LocalDate.now())) {
+                            todayAlerts++;
+                        }
+                        lastMotion = timestamp;
                     }
-                    lastMotion = timestamp;
-                }
 
-                // ✅ Add all points (no skipping)
-                LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                String formattedTime = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
-                series.getData().add(new XYChart.Data<>(formattedTime, motion));
+                    LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    String formattedTime = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
+                    series.getData().add(new XYChart.Data<>(formattedTime, motion));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Database Error", "Failed to load motion data: " + e.getMessage());
         }
 
-        // Update chart
         motionChart.getData().clear();
         motionChart.getData().add(series);
         MotionXAxis.setTickLabelRotation(45);
         motionChart.layout();
 
-        // Update labels
         ActiveSensorId.setText(String.valueOf(totalMotions));
         AlertsTId.setText(String.valueOf(todayAlerts));
         lastMotionDetectedId.setText(lastMotion);
 
-        // Optionally disable the checkbox
         enableMotionSensors.setDisable(true);
         enableMotionSensors.setSelected(false);
     }
 
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
     private String getDayOfMonthSuffix(int day) {
         if (day >= 11 && day <= 13) return "th";
         return switch (day % 10) {
