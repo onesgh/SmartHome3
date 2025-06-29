@@ -58,22 +58,19 @@ public class HumidityController implements Initializable {
     }
 
     private void loadUserName() {
-        if (UserSession.getInstance() == null) {
-            user_name.setText("Hi, Guest 👋");
-            System.err.println("❗ UserSession is null.");
-            return;
-        }
-
-        User currentUser = UserSession.getInstance().getUser();
+        User currentUser = UserSession.getInstance().getCurrentUser(); // Changed from getUser()
         if (currentUser != null) {
             user_name.setText("Hi, " + currentUser.getName() + " 👋");
+        } else {
+            user_name.setText("Hi, Guest 👋"); // Fallback if no user is logged in
+            System.err.println("❗ UserSession.getCurrentUser() returned null.");
         }
     }
 
     private void loadHumidityStats() {
-        if (UserSession.getInstance() == null) return;
+        User currentUser = UserSession.getInstance().getCurrentUser(); // Changed from getUser()
+        if (currentUser == null) return;
 
-        User user = UserSession.getInstance().getUser();
         String query = """
             SELECT AVG(s.humidity) AS avg_humidity, MAX(s.humidity) AS max_humidity
             FROM Sensor s
@@ -82,7 +79,7 @@ public class HumidityController implements Initializable {
         """;
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, user.getID());
+            stmt.setInt(1, currentUser.getID());
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     avgHumidityText.setText(String.format("%.1f%%", rs.getDouble("avg_humidity")));
@@ -100,7 +97,7 @@ public class HumidityController implements Initializable {
     private void loadHumidityData() {
         if (connection == null) return;
 
-        User currentUser = UserSession.getInstance().getUser();
+        User currentUser = UserSession.getInstance().getCurrentUser(); // Changed from getUser()
         if (currentUser == null) return;
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -108,12 +105,12 @@ public class HumidityController implements Initializable {
         humidity_listview.getItems().clear();
 
         String query = """
-        SELECT s.recorded_at, s.humidity
-        FROM Sensor s
-        JOIN Home h ON s.HomeId = h.HomeId
-        WHERE h.OwnerId = ?
-        ORDER BY s.recorded_at
-    """;
+            SELECT s.recorded_at, s.humidity
+            FROM Sensor s
+            JOIN Home h ON s.HomeId = h.HomeId
+            WHERE h.OwnerId = ?
+            ORDER BY s.recorded_at
+        """;
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, currentUser.getID());
@@ -126,7 +123,7 @@ public class HumidityController implements Initializable {
                     LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                     String formatted = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
 
-                    // ✅ Add each point to chart and list
+                    // Add each point to chart and list
                     series.getData().add(new XYChart.Data<>(formatted, humidity));
                     humidity_listview.getItems().add(String.format("%s: %.0f%%", formatted, humidity));
                 }
@@ -141,7 +138,6 @@ public class HumidityController implements Initializable {
         humidityChart.layout();
     }
 
-
     private String getDayOfMonthSuffix(int day) {
         if (day >= 11 && day <= 13) return "th";
         return switch (day % 10) {
@@ -150,5 +146,14 @@ public class HumidityController implements Initializable {
             case 3 -> "rd";
             default -> "th";
         };
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
+            System.out.println("✅ Database connection closed in HumidityController.");
+        }
+        super.finalize();
     }
 }

@@ -1,5 +1,7 @@
 package com.example.smarthome3.Database;
 
+import jdk.internal.misc.ThreadFlock;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -31,7 +33,17 @@ public class DatabaseConnector {
 
         return connection;
     }
-
+    public void closeConnection() {
+        try {
+            Connection connection = null;
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("✅ Database connection closed successfully.");
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Error closing database connection: " + e.getMessage());
+        }
+    }
     // Test method to verify connection (optional, consider moving to a test class)
     public static void main(String[] args) {
         try (Connection connection = getConnection()) {

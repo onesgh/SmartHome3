@@ -57,18 +57,17 @@ public class MotionController implements Initializable {
         );
         dateTimeLabel.setText(formattedDate);
 
-        User currentUser = UserSession.getInstance().getUser();
+        User currentUser = UserSession.getInstance().getCurrentUser();
         if (currentUser != null) {
             user_name.setText("Hi, " + currentUser.getName() + " 👋");
         }
     }
 
     private void loadMotionData() {
-        User user = UserSession.getInstance().getUser();
-        if (user == null) {
-            System.err.println("User is not logged in.");
-            return;
-        }
+        if (connection == null) return;
+
+        User currentUser = UserSession.getInstance().getCurrentUser();
+        if (currentUser == null) return;
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Motion");
@@ -86,7 +85,7 @@ public class MotionController implements Initializable {
         String lastMotion = "N/A";
 
         try (PreparedStatement stmt = connection.prepareStatement(motionQuery)) {
-            stmt.setInt(1, user.getID());
+            stmt.setInt(1, currentUser.getID());
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {

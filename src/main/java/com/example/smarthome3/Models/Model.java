@@ -69,4 +69,11 @@ public class Model {
 
     public void closeStage(Stage currentStage) {
     }
+
+    public void clearUserData() {
+        this.username = null;
+        this.userRole = null;
+        // Clear any other user-related data here
+        System.out.println("✅ Model user data cleared.");
+    }
 }

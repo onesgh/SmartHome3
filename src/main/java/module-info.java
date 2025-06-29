@@ -4,6 +4,7 @@ module com.example.smarthome3{
     requires de.jensd.fx.glyphs.fontawesome;
     requires java.sql;
     requires com.sun.jna.platform;
+    requires java.desktop;
 
 
     opens com.example.smarthome3 to javafx.fxml;

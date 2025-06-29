@@ -57,22 +57,24 @@ public class LoginController implements Initializable {
         try {
             ResultSet result = userDAO.getUserByUsername(username);
             if (result != null && result.next()) {
-                String storedPassword = result.getString("passwordHash"); // plain text now
+                String storedPassword = result.getString("passwordHash");
 
                 if (storedPassword.equals(password)) {
                     int userId = result.getInt("UserId");
                     User user = new User(userId, username);
                     UserSession.getInstance(user);
 
-                    Model.getInstance().getViewFactory().setLoggedInUser(username);
-                    Model.getInstance().setUsername(username);
+                    Model model = Model.getInstance();
+                    model.getViewFactory().setLoggedInUser(username);
+                    model.setUsername(username);
                     String roleFromDB = result.getString("accountType").toUpperCase();
-                    Model.getInstance().setUserRole(
-                            Enum.valueOf(com.example.smarthome3.Views.AccountType.class, roleFromDB)
-                    );
+                    model.setUserRole(Enum.valueOf(com.example.smarthome3.Views.AccountType.class, roleFromDB));
 
                     System.out.println("✅ Login successful as " + roleFromDB);
                     openDashboard(roleFromDB);
+
+                    // Optional: Fetch additional user data (e.g., owned homes) if needed
+                    // Example: userDAO.getUserHomes(userId) could be added here
                 } else {
                     showAlert(AlertType.ERROR, "Login Error", "Incorrect password.");
                 }

@@ -55,16 +55,18 @@ public class TemperatureController implements Initializable {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy - HH:mm");
         dateTimeLabel.setText(now.format(formatter));
 
-        User currentUser = UserSession.getInstance().getUser();
+        User currentUser = UserSession.getInstance().getCurrentUser(); // Changed from getUser()
         if (currentUser != null) {
             user_name.setText("Hi, " + currentUser.getName() + " 👋");
+        } else {
+            user_name.setText("Hi, Guest 👋"); // Fallback if no user is logged in
         }
     }
 
     private void loadTemperatureData() {
         if (connection == null) return;
 
-        User currentUser = UserSession.getInstance().getUser();
+        User currentUser = UserSession.getInstance().getCurrentUser(); // Changed from getUser()
         if (currentUser == null) return;
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();

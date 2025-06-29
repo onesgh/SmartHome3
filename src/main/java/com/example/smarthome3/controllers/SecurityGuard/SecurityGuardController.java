@@ -39,7 +39,7 @@ public class SecurityGuardController implements Initializable {
             throw new RuntimeException("Database connection failed", e);
         }
 
-        User currentUser = UserSession.getInstance().getUser();
+        User currentUser = UserSession.getInstance().getCurrentUser();
         if (currentUser == null) {
             showAlert("Error", "No user session found.");
             return;

@@ -63,9 +63,11 @@ public class LightController implements Initializable {
         );
         dateTimeLabel.setText(formattedDate);
 
-        User currentUser = UserSession.getInstance().getUser();
+        User currentUser = UserSession.getInstance().getCurrentUser(); // Changed from getUser()
         if (currentUser != null) {
             user_name.setText("Hi, " + currentUser.getName() + " 👋");
+        } else {
+            user_name.setText("Hi, Guest 👋"); // Fallback if no user is logged in
         }
     }
 
@@ -82,7 +84,7 @@ public class LightController implements Initializable {
     private void loadLightData() {
         if (connection == null) return;
 
-        User currentUser = UserSession.getInstance().getUser();
+        User currentUser = UserSession.getInstance().getCurrentUser(); // Changed from getUser()
         if (currentUser == null) return;
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -92,7 +94,7 @@ public class LightController implements Initializable {
             SELECT s.recorded_at, s.light_lux
             FROM Sensor s
             JOIN Home h ON s.HomeId = h.HomeId
-            WHERE h.OwnerId = ?
+            WHERE s.light_lux IS NOT NULL AND h.OwnerId = ?
             ORDER BY s.recorded_at
         """;
 
@@ -106,15 +108,12 @@ public class LightController implements Initializable {
             double last = 0;
 
             while (rs.next()) {
-
-
                 String timestamp = rs.getString("recorded_at");
                 LocalDateTime dateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                 String formattedTime = dateTime.format(DateTimeFormatter.ofPattern("MM-dd HH:mm"));
 
                 double lux = rs.getDouble("light_lux");
                 last = lux;
-
                 max = Math.max(max, lux);
                 min = Math.min(min, lux);
 
@@ -142,5 +141,14 @@ public class LightController implements Initializable {
                 BrightnessId.setText(Math.round(newVal.doubleValue()) + " %");
             });
         }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
+            System.out.println("✅ Database connection closed in LightController.");
+        }
+        super.finalize();
     }
 }

@@ -9,10 +9,10 @@ public class User {
         this.name = name;
     }
 
-    public User() {
-        this.id = -1;
+    /*public User() {
+        this.id = id;
         this.name = "";
-    }
+    }*/
 
     public int getID() {
         return id;
