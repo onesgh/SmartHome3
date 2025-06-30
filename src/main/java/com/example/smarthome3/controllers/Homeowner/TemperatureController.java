@@ -79,12 +79,8 @@ public class TemperatureController implements Initializable {
         ORDER BY s.recorded_at
     """;
 
-        try (PreparedStatement stmt = connection.prepareStatement(
-                query,
-                ResultSet.TYPE_FORWARD_ONLY,
-                ResultSet.CONCUR_READ_ONLY)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, currentUser.getID());
-            stmt.setFetchSize(100); // Récupérer 100 lignes à la fois pour limiter la mémoire
 
             try (ResultSet rs = stmt.executeQuery()) {
                 Temperature_listview.getItems().clear();

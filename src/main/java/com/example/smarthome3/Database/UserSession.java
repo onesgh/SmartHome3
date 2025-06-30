@@ -2,34 +2,35 @@ package com.example.smarthome3.Database;
 
 public class UserSession {
     private static UserSession instance;
-    private static User currentUser;
+    private User currentUser;
 
-    public UserSession(User currentUser) {
+    // Private constructor to enforce singleton pattern
+    private UserSession(User currentUser) {
         this.currentUser = currentUser;
     }
 
+    // Returns the current instance (if any)
     public static synchronized UserSession getInstance() {
-        if (instance == null) {
-            instance = new UserSession(currentUser);
-        }
         return instance;
     }
 
+    // Creates or updates the session with a new user
     public static synchronized UserSession getInstance(User user) {
         if (instance == null) {
-            instance = new UserSession(currentUser);
+            instance = new UserSession(user); // ✅ correct: pass the given user
+        } else {
+            instance.currentUser = user; // ✅ update current user if session already exists
         }
-        instance.currentUser = user;
         return instance;
     }
 
+    // Returns the current logged-in user
     public User getCurrentUser() {
         return currentUser;
     }
 
+    // Clears the session completely (used on logout)
     public static void clearUser() {
-        if (instance != null) {
-            instance.currentUser = null;
-        }
+        instance = null; // ✅ reset the whole session
     }
 }
