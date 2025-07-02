@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class TechnicianController implements Initializable {
@@ -23,8 +25,12 @@ public class TechnicianController implements Initializable {
     @FXML private Button reject_btn;
     @FXML private Button refresh_btn;
     @FXML private Button Logout_btn1;
+    @FXML private TextField search_field;
+    @FXML private TextArea request_details;
+    @FXML private ProgressBar progress_bar;
 
     private Connection connection;
+    private Map<String, String> messageToDescriptionMap = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -48,16 +54,29 @@ public class TechnicianController implements Initializable {
 
         if (Logout_btn1 != null) {
             Logout_btn1.setOnAction(event -> logoutAndRedirectToLogin());
-        } else {
-            System.out.println("❌ Logout button is not linked!");
         }
+
+        // Show full description on request select
+        request_listview.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                request_details.setText(messageToDescriptionMap.getOrDefault(newVal, newVal));
+            }
+        });
+
+        // Filter requests
+        search_field.textProperty().addListener((obs, oldVal, newVal) -> {
+            filterRequests(currentUser.getID(), newVal);
+        });
+
+        progress_bar.setProgress(0);
     }
 
     private void loadRequests(int userId) {
         request_listview.getItems().clear();
+        messageToDescriptionMap.clear();
 
         String query = """
-            SELECT Timestamp, Message
+            SELECT Timestamp, Message, Description
             FROM Alert
             WHERE UserId = ?
             ORDER BY Timestamp DESC
@@ -69,7 +88,13 @@ public class TechnicianController implements Initializable {
             while (rs.next()) {
                 Timestamp timestamp = rs.getTimestamp("Timestamp");
                 String message = rs.getString("Message");
-                request_listview.getItems().add(timestamp + " - " + message);
+                String description = rs.getString("Description");
+
+                String listItem = timestamp + " - " + message;
+                String displayText = (description != null && !description.isBlank()) ? description : message;
+
+                request_listview.getItems().add(listItem);
+                messageToDescriptionMap.put(listItem, displayText);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -77,11 +102,50 @@ public class TechnicianController implements Initializable {
         }
     }
 
+    private void filterRequests(int userId, String keyword) {
+        request_listview.getItems().clear();
+
+        String query = """
+            SELECT Timestamp, Message, Description
+            FROM Alert
+            WHERE UserId = ?
+            ORDER BY Timestamp DESC
+        """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Timestamp timestamp = rs.getTimestamp("Timestamp");
+                String message = rs.getString("Message");
+                String description = rs.getString("Description");
+
+                String listItem = timestamp + " - " + message;
+                if (listItem.toLowerCase().contains(keyword.toLowerCase())) {
+                    request_listview.getItems().add(listItem);
+                    messageToDescriptionMap.put(listItem, description != null && !description.isBlank() ? description : message);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Database Error", "Failed to filter requests.");
+        }
+    }
+
     private void handleRequestAction(int userId, String status) {
         String selected = request_listview.getSelectionModel().getSelectedItem();
         if (selected != null) {
+            progress_bar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+
             insertLog(userId, "Request " + status + ": " + selected);
+
             request_listview.getItems().remove(selected);
+            request_details.clear();
+            messageToDescriptionMap.remove(selected);
+
+            progress_bar.setProgress(1.0);
+        } else {
+            showAlert("No Selection", "Please select a request to " + status + ".");
         }
     }
 
@@ -94,6 +158,7 @@ public class TechnicianController implements Initializable {
             ResultSet rs = homeStmt.executeQuery();
             if (rs.next()) {
                 int homeId = rs.getInt("HomeId");
+
                 try (PreparedStatement insertStmt = connection.prepareStatement(insertQuery)) {
                     insertStmt.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
                     insertStmt.setString(2, action);

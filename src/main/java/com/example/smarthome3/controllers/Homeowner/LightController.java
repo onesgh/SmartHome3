@@ -24,18 +24,30 @@ import java.util.ResourceBundle;
 
 public class LightController implements Initializable {
 
-    @FXML public ListView<String> light_listview;
-    @FXML public Text user_name;
-    @FXML public Label dateTimeLabel;
-    @FXML public NumberAxis lightYAxis;
-    @FXML public CategoryAxis lightXAxis;
-    @FXML public LineChart<String, Number> lightChart;
-    @FXML public Text maxLightId;
-    @FXML public Text minLightId;
-    @FXML public Text currentLightId;
-    @FXML public Slider brightnessSlider;
-    @FXML public Text BrightnessId;
-    @FXML public Text AutoStatusId;
+    @FXML
+    public ListView<String> light_listview;
+    @FXML
+    public Text user_name;
+    @FXML
+    public Label dateTimeLabel;
+    @FXML
+    public NumberAxis lightYAxis;
+    @FXML
+    public CategoryAxis lightXAxis;
+    @FXML
+    public LineChart<String, Number> lightChart;
+    @FXML
+    public Text maxLightId;
+    @FXML
+    public Text minLightId;
+    @FXML
+    public Text currentLightId;
+    @FXML
+    public Slider brightnessSlider;
+    @FXML
+    public Text BrightnessId;
+    @FXML
+    public Text AutoStatusId;
 
     private Connection connection;
 
@@ -157,6 +169,7 @@ public class LightController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     private void setupSliderListener() {
         if (brightnessSlider != null && BrightnessId != null) {
             brightnessSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -165,12 +178,4 @@ public class LightController implements Initializable {
         }
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        if (connection != null && !connection.isClosed()) {
-            connection.close();
-            System.out.println("✅ Database connection closed in LightController.");
-        }
-        super.finalize();
-    }
 }

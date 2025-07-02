@@ -38,12 +38,11 @@
     <!-- Quick Controls -->
     <HBox layoutX="450" layoutY="310" spacing="10" />
      <Button fx:id="emergency_alert_btn" layoutX="442.0" layoutY="531.0" prefHeight="48.0" prefWidth="129.0" style="-fx-background-color: #ff0000; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-radius: 5px;" text="Emergency Alert" />
-     <Button fx:id="refresh_btn" layoutX="624.0" layoutY="531.0" prefHeight="48.0" prefWidth="129.0" style="-fx-background-color: #ffa500; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-radius: 5px;" text="Refresh Log" />
    <Text layoutX="643.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Smart Home" wrappingWidth="101.42633056640625">
       <font>
          <Font name="System Bold" size="15.0" />
       </font>
    </Text>
-   <Button fx:id="logout_btn2" layoutX="626.0" layoutY="590.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="129.0" text="Logout " />
+   <Button fx:id="logout_btn2" layoutX="604.0" layoutY="531.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="142.0" text="Logout " />
 
 </AnchorPane>
