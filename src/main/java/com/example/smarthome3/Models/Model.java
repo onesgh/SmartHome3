@@ -2,7 +2,6 @@ package com.example.smarthome3.Models;
 
 import com.example.smarthome3.Views.ViewFactory;
 import com.example.smarthome3.Views.AccountType;
-import javafx.stage.Stage;
 
 public class Model {
     private static Model model;
@@ -21,12 +20,17 @@ public class Model {
         }
         return model;
     }
+    public static void resetInstance() {
+        model = new Model();
+        System.out.println("✅ Model instance reset.");
+    }
+
 
     public ViewFactory getViewFactory() {
         return viewFactory;
     }
 
-    public AccountType getUserRole() {
+    public AccountType setUserRole() {
         return userRole;
     }
 
@@ -35,7 +39,7 @@ public class Model {
     }
 
     // ✅ GETTER & SETTER for username (changed from email)
-    public String getUsername() {
+    public String setUsername() {
         return username;
     }
 
@@ -52,28 +56,5 @@ public class Model {
         this.loginAccountType = loginAccountType;
     }
 
-    // ✅ Update registerUser to use username instead of email
-    public boolean registerUser(String username, String password, String confirmPassword, AccountType userRole) {
-        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || userRole == null) {
-            return false;
-        }
 
-        if (!password.equals(confirmPassword)) {
-            return false;
-        }
-
-        // Save user logic here, you can add database save logic
-
-        return true;
-    }
-
-    public void closeStage(Stage currentStage) {
-    }
-
-    public void clearUserData() {
-        this.username = null;
-        this.userRole = null;
-        // Clear any other user-related data here
-        System.out.println("✅ Model user data cleared.");
-    }
 }

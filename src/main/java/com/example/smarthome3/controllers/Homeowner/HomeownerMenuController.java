@@ -4,10 +4,10 @@ import com.example.smarthome3.Models.Model;
 import com.example.smarthome3.Database.UserSession;
 import com.example.smarthome3.Database.DatabaseConnector;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -73,32 +73,24 @@ public class HomeownerMenuController implements Initializable {
     }
 
     private void logoutAndRedirectToLogin() {
-        // Clear user session
+        // Clear session
         UserSession.clearUser();
 
-        // Reset model data
-        Model model = Model.getInstance();
-        model.getViewFactory().setLoggedInUser(null);
-        model.setUsername(null);
-        model.setUserRole(null);
-        model.clearUserData();
+        // Reset model (which resets viewFactory too)
+        Model.resetInstance();
 
-        // Close database connection
-        if (dbConnector != null) {
-            dbConnector.closeConnection();
-        }
+        // Close DB connection
+        DatabaseConnector.closeConnection();
 
-        System.out.println("✅ User session, model data, and database connection cleared.");
+        System.out.println("✅ Session, model, and connection cleared.");
 
         try {
-            // Load login page
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Fxml/Login.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Login");
             stage.show();
 
-            // Close current window
             Stage currentStage = (Stage) logout_btn.getScene().getWindow();
             currentStage.close();
 

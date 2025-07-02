@@ -4,33 +4,47 @@ public class UserSession {
     private static UserSession instance;
     private User currentUser;
 
-    // Private constructor to enforce singleton pattern
+    // Private constructor (singleton)
     private UserSession(User currentUser) {
         this.currentUser = currentUser;
     }
 
-    // Returns the current instance (if any)
+    // Get existing session instance (null if not initialized)
     public static synchronized UserSession getInstance() {
         return instance;
     }
 
-    // Creates or updates the session with a new user
+    // Create or update session with a user
     public static synchronized UserSession getInstance(User user) {
-        if (instance == null) {
-            instance = new UserSession(user); // ✅ correct: pass the given user
-        } else {
-            instance.currentUser = user; // ✅ update current user if session already exists
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
         }
+
+        if (instance == null) {
+            System.out.println("[UserSession] Creating new session for: " + user.getName());
+            instance = new UserSession(user);
+        } else {
+            System.out.println("[UserSession] Updating session to user: " + user.getName());
+            instance.currentUser = user;
+        }
+
         return instance;
     }
 
-    // Returns the current logged-in user
+    public static void startSession(User user) {
+        instance = new UserSession(user);  // ✅ Always create a new session
+    }
+
+    // Get the current user object
     public User getCurrentUser() {
         return currentUser;
     }
 
-    // Clears the session completely (used on logout)
+
+
+    // Clear the session (logout)
     public static void clearUser() {
-        instance = null; // ✅ reset the whole session
+        System.out.println("[UserSession] Clearing user session.");
+        instance = null;
     }
 }

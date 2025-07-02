@@ -5,7 +5,6 @@ package com.example.smarthome3.Database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public class DatabaseConnector {
     // Configuration constants (ideally loaded from a config file or env variables)
@@ -33,7 +32,7 @@ public class DatabaseConnector {
 
         return connection;
     }
-    public void closeConnection() {
+    public static void closeConnection() {
         try {
             Connection connection = null;
             if (connection != null && !connection.isClosed()) {

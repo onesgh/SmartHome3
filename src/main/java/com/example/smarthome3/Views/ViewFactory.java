@@ -231,4 +231,10 @@ public class ViewFactory {
 
     }
 
-}
+    public void resetAllViews() {
+        if (HomeownerSelectedMenuItem != null) {
+            HomeownerSelectedMenuItem.set(null);
+        }
+        System.out.println("✅ ViewFactory views reset.");
+    }
+    }
