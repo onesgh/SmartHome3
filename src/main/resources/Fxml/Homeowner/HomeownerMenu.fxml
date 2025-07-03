@@ -32,12 +32,6 @@
          <Button fx:id="motion_btn" mnemonicParsing="false" text="      💧 Motion" />
          <Button fx:id="temperature_btn" mnemonicParsing="false" text="   🌡Temperature" />
          <Button fx:id="humidity_btn" mnemonicParsing="false" text="      📡Humidity" />
-
-         <Button fx:id="Alert_btn" mnemonicParsing="false" text="Profile" textAlignment="CENTER">
-            <graphic>
-               <FontAwesomeIconView glyphName="USER" text="" wrappingWidth="17.999996185302734" />
-            </graphic>
-         </Button>
          <Button fx:id="logout_btn" mnemonicParsing="false" text="     Logout">
             <graphic>
                <FontAwesomeIconView glyphName="EXTERNAL_LINK" />

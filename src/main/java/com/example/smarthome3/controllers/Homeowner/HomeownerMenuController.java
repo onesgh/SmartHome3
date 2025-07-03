@@ -20,7 +20,7 @@ public class HomeownerMenuController implements Initializable {
     @FXML public Button motion_btn;
     @FXML public Button temperature_btn;
     @FXML public Button humidity_btn;
-    @FXML public Button Alert_btn;
+
     @FXML public Button logout_btn;
     @FXML public Button report_btn;
 
@@ -59,10 +59,6 @@ public class HomeownerMenuController implements Initializable {
             Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Light");
         });
 
-        Alert_btn.setOnAction(event -> {
-            System.out.println("Alert button clicked");
-            Model.getInstance().getViewFactory().getHomeownerSelectedMenuItem().set("Alert");
-        });
 
         report_btn.setOnAction(event -> {
             System.out.println("Report button clicked");
