@@ -6,7 +6,7 @@ import com.example.smarthome3.Database.UserSession;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+
 import javafx.scene.text.Text;
 
 import java.net.URL;
