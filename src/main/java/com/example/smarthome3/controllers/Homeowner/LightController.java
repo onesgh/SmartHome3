@@ -40,8 +40,7 @@ public class LightController implements Initializable {
     public Text maxLightId;
     @FXML
     public Text minLightId;
-    @FXML
-    public Text currentLightId;
+
     @FXML
     public Slider brightnessSlider;
     @FXML
@@ -144,11 +143,11 @@ public class LightController implements Initializable {
                 if (!hasData) {
                     maxLightId.setText("N/A");
                     minLightId.setText("N/A");
-                    currentLightId.setText("N/A");
+
                 } else {
                     maxLightId.setText(Math.round(max) + " lx");
                     minLightId.setText(Math.round(min) + " lx");
-                    currentLightId.setText(Math.round(last) + " lx");
+
                 }
 
                 lightChart.getData().clear();
