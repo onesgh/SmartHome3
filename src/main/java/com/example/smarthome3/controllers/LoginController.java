@@ -58,6 +58,12 @@ public class LoginController implements Initializable {
             ResultSet result = userDAO.getUserByUsername(username);
             if (result != null && result.next()) {
                 String storedPassword = result.getString("passwordHash");
+                String storedUsername = result.getString("username");
+                if (!storedUsername.equals(username)) {
+                    showAlert(AlertType.ERROR, "Login Error", "User not found.");
+                    return;
+                }
+
 
                 if (storedPassword.equals(password)) {
                     int userId = result.getInt("UserId");

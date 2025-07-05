@@ -19,7 +19,6 @@
 
          <Text style="-fx-font-size: 26px; -fx-fill: #4a3220; -fx-font-weight: bold;" text="🌡Temperature" />
          <Text fx:id="temperatureValueText" style="-fx-opacity: 0.6; -fx-font-size: 14px;" text="9°C | Auto Room Temperature" />
-         <Slider max="30" min="10" value="22.0" />
 
    </VBox>
    <VBox layoutX="600.0" layoutY="120.0" prefHeight="350" prefWidth="150" style="-fx-background-color: #fff8eb; -fx-background-radius: 16px; -fx-padding: 20; -fx-spacing: 10;                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0.3, 0, 2);" AnchorPane.rightAnchor="77.33333333333334">
@@ -34,13 +33,13 @@
    <VBox fx:id="motionValue" layoutX="62.0" layoutY="320.0" prefHeight="150" prefWidth="240" style="-fx-background-color: #ffffffcc; -fx-background-radius: 16px; -fx-padding: 20; -fx-spacing: 8;                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.2, 0, 2);">
 
          <Text style="-fx-font-size: 26px; -fx-fill: #4a3220; -fx-font-weight: bold;" text="💧 Motion " />
-         <Text  fx:id="motionValueText" style="-fx-opacity: 0.65; -fx-font-size: 14px;" text="4 Connected Devices" />
+         <Text fx:id="motionValueText" style="-fx-opacity: 0.65; -fx-font-size: 14px;" text="4 Connected Devices" />
 
    </VBox>
    <VBox fx:id="humidityValue" layoutX="338.0" layoutY="320.0" prefHeight="150" prefWidth="240" style="-fx-background-color: #ffffffcc; -fx-background-radius: 16px; -fx-padding: 20; -fx-spacing: 8;                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.2, 0, 2);">
 
          <Text style="-fx-font-size: 26px; -fx-fill: #4a3220; -fx-font-weight: bold;" text="📡Humidity" />
-         <Text fx:id="humidityValueText"  style="-fx-opacity: 0.65; -fx-font-size: 14px;" text=" Humidity: 45%" />
+         <Text fx:id="humidityValueText" style="-fx-opacity: 0.65; -fx-font-size: 14px;" text=" Humidity: 45%" />
 
    </VBox>
    <AnchorPane prefHeight="59.0" prefWidth="838.0" style="-fx-background-color: #ffffffcc; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
